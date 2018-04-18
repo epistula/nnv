@@ -3,6 +3,10 @@ import subprocess
 import pdb
 import glob
 
+def run(cmd):
+    subprocess.check_call(cmd, shell=True)
+
+
 list_commands = [
 				 'mkdir ~/datasets/',
 				 # 'mkdir ~/datasets/cat_data',
