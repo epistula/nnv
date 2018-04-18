@@ -9,11 +9,11 @@ def run(cmd):
 
 list_commands = [
 				 'mkdir ~/datasets/',
-				 # 'mkdir ~/datasets/cat_data',
+				 'mkdir ~/datasets/cat_data',
 				 'mkdir ~/datasets/cifar10_data',
 				 'mkdir ~/datasets/cifar10_data/cifar-10-batches-py',
-				 # 'mkdir ~/datasets/cub_data',
-				 # 'mkdir ~/datasets/flowers_data',
+				 'mkdir ~/datasets/cub_data',
+				 'mkdir ~/datasets/flowers_data',
 				 'mkdir ~/datasets/lsun_celebA_data',
 				 'mkdir ~/datasets/lsun_celebA_data/celebA_64_cubic',
 				 'mkdir ~/datasets/lsun_celebA_data/celebA_64_cubic/splits',
