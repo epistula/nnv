@@ -27,7 +27,7 @@ zone = 'us-east1-d'
 
 for f in list_of_files:
 	run('echo gcloud compute scp '+ mac_loc_str + f[0]+ f[1] +' '+cirra_loc_str+f[0]+' '+ '--zone ' + zone)
-	run('gcloud compute scp '+ mac_loc_str + f[0]+ f[1] +' '+cirra_loc_str+f[1]+' '+ '--zone ' + zone)
+	run('gcloud compute scp '+ mac_loc_str + f[0]+ f[1] +' '+cirra_loc_str+f[0]+' '+ '--zone ' + zone)
 
 # include_str_mac = ''
 # for i in range(len(list_of_folders)):
