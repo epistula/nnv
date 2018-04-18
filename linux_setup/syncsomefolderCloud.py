@@ -8,8 +8,8 @@ def run(cmd):
 
 
 list_of_files = [
-				('datasets/lsun_celebA_data/celebA_64_cubic/splits/train/', 'train.npy'),
-				('datasets/lsun_celebA_data/celebA_64_cubic/splits/test/', 'test.npy'),
+				# ('datasets/lsun_celebA_data/celebA_64_cubic/splits/train/', 'train.npy'),
+				# ('datasets/lsun_celebA_data/celebA_64_cubic/splits/test/', 'test.npy'),
 				('datasets/cifar10_data/cifar-10-batches-py/', 'regulartest_data.npy'),
 				('datasets/cifar10_data/cifar-10-batches-py/', 'regulartest_label.npy'),
 				('datasets/cifar10_data/cifar-10-batches-py/', 'regulartrain_data.npy'),

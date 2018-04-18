@@ -30,6 +30,8 @@ printf 'y' | conda create -n tensorflowGPU python=3.6
 source activate tensorflowGPU
 # printf '\nsource activate tensorflowGPU' >> ~/.bashrc
 pip install numpy matplotlib scikit-learn scipy seaborn PyQt5 pillow # for seaborn
+printf 'y' | pip install numba
+pip install umap-learn
 pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.2.1-cp36-cp36m-linux_x86_64.whl
 
 # source deactivate
