@@ -23,7 +23,8 @@ list_commands = [
 
 for command in list_commands:
 	run('echo ' + command)
-	run(command)
+	try: run(command)
+	except: pass
 
 
 
