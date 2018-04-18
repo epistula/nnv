@@ -29,6 +29,7 @@ export PATH=~/anaconda3/bin:$PATH
 printf 'y' | conda create -n tensorflowGPU python=3.6
 source activate tensorflowGPU
 # printf '\nsource activate tensorflowGPU' >> ~/.bashrc
+pip install --upgrade pip
 pip install numpy matplotlib scikit-learn scipy seaborn PyQt5 pillow # for seaborn
 printf 'y' | pip install numba
 pip install umap-learn
