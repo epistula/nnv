@@ -22,12 +22,13 @@ mac_loc_str = '/Users/MeVlana/'
 # cirra_loc_str = 'instance-central1c-0cpu2mem50hd-hour0-022-month15-80:'+main_folder
 # zone = 'us-central1-c'
 
-cirra_loc_str = 'instance1-east1d-1gpu2cpu12mem50hd-hour0-402-month293-12:'+main_folder
+# cirra_loc_str = 'instance1-east1d-1gpu2cpu12mem50hd-hour0-402-month293-12'
+cirra_loc_str = 'instance1-east1d-1gpu1cpu6mem50hd-hour0-361-month263-67'
 zone = 'us-east1-d'
 
 for f in list_of_files:
-	run('echo gcloud compute scp '+ mac_loc_str + f[0]+ f[1] +' '+cirra_loc_str+f[0]+' '+ '--zone ' + zone)
-	run('gcloud compute scp '+ mac_loc_str + f[0]+ f[1] +' '+cirra_loc_str+f[0]+' '+ '--zone ' + zone)
+	run('echo gcloud compute scp '+ mac_loc_str + f[0]+ f[1] +' '+cirra_loc_str+':'+main_folder +f[0]+' '+ '--zone ' + zone)
+	run('gcloud compute scp '+ mac_loc_str + f[0]+ f[1] +' '+cirra_loc_str+':'+main_folder +f[0]+' '+ '--zone ' + zone)
 
 # include_str_mac = ''
 # for i in range(len(list_of_folders)):

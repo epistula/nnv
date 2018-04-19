@@ -6,7 +6,7 @@ if ! dpkg-query -W cuda; then
   curl -O http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-repo-ubuntu1604_8.0.61-1_amd64.deb
   sudo dpkg -i ./cuda-repo-ubuntu1604_8.0.61-1_amd64.deb
   sudo apt-get update
-  sudo apt-get install cuda -y
+  sudo apt-get install cuda-8-0 -y
 fi
 
 tar xvzf ~/tensorflowCode/linux_setup/cudnn-8.0-linux-x64-v5.1.tgz
@@ -17,7 +17,9 @@ printf '\nexport LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/lo
 printf '\nexport CUDA_HOME=/usr/local/cuda' >> ~/.bashrc
 
 printf 'Y\n' | sudo apt-get install libcupti-dev
-export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+# export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+export LD_LIBRARY_PATH="$/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+
 export CUDA_HOME=/usr/local/cuda
 
 wget -N https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh
