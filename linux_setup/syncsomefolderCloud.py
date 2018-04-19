@@ -30,6 +30,7 @@ for f in list_of_files:
 	run('echo gcloud compute scp '+ mac_loc_str + f[0]+ f[1] +' '+cirra_loc_str+':'+main_folder +f[0]+' '+ '--zone ' + zone)
 	run('gcloud compute scp '+ mac_loc_str + f[0]+ f[1] +' '+cirra_loc_str+':'+main_folder +f[0]+' '+ '--zone ' + zone)
 
+
 # include_str_mac = ''
 # for i in range(len(list_of_folders)):
 # 	cirra_loc_str = cirra_address+ ':' + main_folder+list_of_folders[i]

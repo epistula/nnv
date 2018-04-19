@@ -14,16 +14,22 @@ def run(cmd):
 cirra_loc_str = 'instance1-east1d-1gpu1cpu6mem50hd-hour0-361-month263-67'
 zone = 'us-east1-d'
 
+list_of_files = [('Visualization/', '.png'),
+				 ('', '.txt'),
+]
 
 experiment_folder = './EEEexperimentsLast-PDWGANCannon2-CIFAR10/a4682d2f5e4f4f08bdbcd2ce74e4d48c/'
 
 main_folder = '~/tensorflowCode/'+experiment_folder
 mac_loc_str = '/Users/MeVlana/CloudExperiments/'
 
-if not os.path.exists(mac_loc_str + experiment_folder): os.makedirs(mac_loc_str + experiment_folder)
+for f in list_of_files:
+	subfolder = f[0] 
+	extension = f[1]
+	source_dir = main_folder+subfolder
+	target_dir = mac_loc_str+experiment_folder+subfolder
 
-run('echo gcloud compute scp '+ cirra_loc_str+':'+main_folder+'Visualization/*.png'+' '+mac_loc_str + experiment_folder+' '+ '--zone ' + zone)
-run('gcloud compute scp '+ cirra_loc_str+':'+main_folder+'Visualization/*.png'+' '+mac_loc_str + experiment_folder+' '+ '--zone ' + zone)
-run('echo gcloud compute scp '+ cirra_loc_str+':'+main_folder+'*.txt'+' '+mac_loc_str + experiment_folder+' '+ '--zone ' + zone)
-run('gcloud compute scp '+ cirra_loc_str+':'+main_folder+'*.txt'+' '+mac_loc_str + experiment_folder+' '+ '--zone ' + zone)
+	if not os.path.exists(target_dir): os.makedirs(target_dir)
+	run('echo gcloud compute scp '+ cirra_loc_str+':'+source_dir+'*'+extension+' '+target_dir+' '+ '--zone ' + zone)
+	run('gcloud compute scp '+ cirra_loc_str+':'+source_dir+'*'+extension+' '+target_dir+' '+ '--zone ' + zone)
 
