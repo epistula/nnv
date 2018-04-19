@@ -65,7 +65,7 @@ elif Algorithm == 'PDWGANCannon2':
                              'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 5, 'n_filter': 128,
                              'encoder_mode': 'UnivApprox', 'divergence_mode': 'MMD', 'dual_dist_mode': 'CouplingAndPrior', 
                              'enc_normalization_mode': 'None', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'None', 
-                             'critic_reg_mode': ['Coupling Gradient Vector',], 'enc_reg_strength': 100, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 'cri_reg_strength': 1}
+                             'critic_reg_mode': ['Coupling Gradient Vector',], 'enc_reg_strength': 100, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 'cri_reg_strength': 10}
 # elif Algorithm == 'PDWGAN':
 #     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0., 'beta2': 0.9,
 #                              'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 5, 'n_filter': 64,
