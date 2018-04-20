@@ -94,19 +94,19 @@ elif Algorithm == 'PDWGANTest':
 
 global_experiment_name = 'EEEexperimentsLast-'+Algorithm+'-'
 
+parser = argparse.ArgumentParser(description='Tensorflow Gan Models')
+parser.add_argument('--exp_dir_postfix', type=str, default='', help='Directory to put the experiment postfix.')
+parser.add_argument('--save_checkpoints', type=bool, default=True, help='store the checkpoints?')
+parser.add_argument('--restore_dir', type=str, default='/4aac5d1758804ecf9fef79dfbf29228a/checkpoint/', help='Directory of restore experiment.')
+parser.add_argument('--restore', type=bool, default=False, help='Restore model.')
+parser.add_argument('--gpu', type=str, default='0', help='gpu to use.')
+parser.add_argument('--epochs', type=int, default=1000000000, help='Number of epochs to train.')
+parser.add_argument('--batch_size', type=int, default=50, help='Input batch size for training.')
+parser.add_argument('--time_steps', type=int, default=1, help='Number of timesteps')
+parser.add_argument('--seed', type=int, default=1123124, help='random seed')
+    
 if dataset_to_use == 'IMAGENET':
-    parser = argparse.ArgumentParser(description='Tensorflow Gan Models')
     parser.add_argument('--global_exp_dir', type=str, default='./'+global_experiment_name+'IMAGENET', help='Directory to put the experiments.')
-    parser.add_argument('--exp_dir_postfix', type=str, default='', help='Directory to put the experiment postfix.')
-    parser.add_argument('--dataset_dir', type=str, default='../dataset/dataset_both2/scripted/*.npz', help='Directory of data.')
-    parser.add_argument('--save_checkpoints', type=bool, default=True, help='store the checkpoints?')
-    parser.add_argument('--restore_dir', type=str, default='/7cb1611a0a584269a019dc8342aee213/checkpoint/', help='Directory of restore experiment.')
-    parser.add_argument('--restore', type=bool, default=False, help='Restore model.')
-    parser.add_argument('--gpu', type=str, default='0', help='gpu to use.')
-    parser.add_argument('--epochs', type=int, default=1000000000, help='Number of epochs to train.')
-    parser.add_argument('--batch_size', type=int, default=50, help='Input batch size for training.')
-    parser.add_argument('--time_steps', type=int, default=1, help='Number of timesteps')
-    parser.add_argument('--seed', type=int, default=1123124, help='random seed')
 
     parser.add_argument('--gradient_clipping', type=float, default=0, help='Initial weight decay.')
     parser.add_argument('--optimizer_class', type=str, default=alg_specific_settings['optimizer_class'], help='Optimizer type.')
@@ -163,19 +163,8 @@ if dataset_to_use == 'IMAGENET':
     # # # # # #############################################################################################################################
 
 if dataset_to_use == 'BEDROOM':
-    parser = argparse.ArgumentParser(description='Tensorflow Gan Models')
     parser.add_argument('--global_exp_dir', type=str, default='./'+global_experiment_name+'BEDROOM', help='Directory to put the experiments.')
-    parser.add_argument('--exp_dir_postfix', type=str, default='', help='Directory to put the experiment postfix.')
-    parser.add_argument('--dataset_dir', type=str, default='../dataset/dataset_both2/scripted/*.npz', help='Directory of data.')
-    parser.add_argument('--save_checkpoints', type=bool, default=True, help='store the checkpoints?')
-    parser.add_argument('--restore_dir', type=str, default='/7cb1611a0a584269a019dc8342aee213/checkpoint/', help='Directory of restore experiment.')
-    parser.add_argument('--restore', type=bool, default=False, help='Restore model.')
-    parser.add_argument('--gpu', type=str, default='0', help='gpu to use.')
-    parser.add_argument('--epochs', type=int, default=1000000000, help='Number of epochs to train.')
-    parser.add_argument('--batch_size', type=int, default=50, help='Input batch size for training.')
-    parser.add_argument('--time_steps', type=int, default=1, help='Number of timesteps')
-    parser.add_argument('--seed', type=int, default=1123124, help='random seed')
-
+    
     parser.add_argument('--gradient_clipping', type=float, default=0, help='Initial weight decay.')
     parser.add_argument('--optimizer_class', type=str, default=alg_specific_settings['optimizer_class'], help='Optimizer type.')
     parser.add_argument('--learning_rate', type=float, default=alg_specific_settings['learning_rate'], help='Initial learning rate.')
@@ -230,18 +219,7 @@ if dataset_to_use == 'BEDROOM':
     # # # # # #############################################################################################################################
 
 elif dataset_to_use == 'CELEB':
-    parser = argparse.ArgumentParser(description='Tensorflow Gan Models')
     parser.add_argument('--global_exp_dir', type=str, default='./'+global_experiment_name+'CELEB', help='Directory to put the experiments.')
-    parser.add_argument('--exp_dir_postfix', type=str, default='', help='Directory to put the experiment postfix.')
-    parser.add_argument('--dataset_dir', type=str, default='../dataset/dataset_both2/scripted/*.npz', help='Directory of data.')
-    parser.add_argument('--save_checkpoints', type=bool, default=True, help='store the checkpoints?')
-    parser.add_argument('--restore_dir', type=str, default='/7cb1611a0a584269a019dc8342aee213/checkpoint/', help='Directory of restore experiment.')
-    parser.add_argument('--restore', type=bool, default=False, help='Restore model.')
-    parser.add_argument('--gpu', type=str, default='0', help='gpu to use.')
-    parser.add_argument('--epochs', type=int, default=1000000000, help='Number of epochs to train.')
-    parser.add_argument('--batch_size', type=int, default=50, help='Input batch size for training.')
-    parser.add_argument('--time_steps', type=int, default=1, help='Number of timesteps')
-    parser.add_argument('--seed', type=int, default=1123124, help='random seed')
 
     parser.add_argument('--gradient_clipping', type=float, default=0, help='Initial weight decay.')
     parser.add_argument('--optimizer_class', type=str, default=alg_specific_settings['optimizer_class'], help='Optimizer type.')
@@ -297,18 +275,7 @@ elif dataset_to_use == 'CELEB':
     # # # # # #############################################################################################################################
 
 elif dataset_to_use == 'CAT':
-    parser = argparse.ArgumentParser(description='Tensorflow Gan Models')
     parser.add_argument('--global_exp_dir', type=str, default='./'+global_experiment_name+'CAT', help='Directory to put the experiments.')
-    parser.add_argument('--exp_dir_postfix', type=str, default='', help='Directory to put the experiment postfix.')
-    parser.add_argument('--dataset_dir', type=str, default='../dataset/dataset_both2/scripted/*.npz', help='Directory of data.')
-    parser.add_argument('--save_checkpoints', type=bool, default=True, help='store the checkpoints?')
-    parser.add_argument('--restore_dir', type=str, default='/7cb1611a0a584269a019dc8342aee213/checkpoint/', help='Directory of restore experiment.')
-    parser.add_argument('--restore', type=bool, default=False, help='Restore model.')
-    parser.add_argument('--gpu', type=str, default='0', help='gpu to use.')
-    parser.add_argument('--epochs', type=int, default=1000000000, help='Number of epochs to train.')
-    parser.add_argument('--batch_size', type=int, default=50, help='Input batch size for training.')
-    parser.add_argument('--time_steps', type=int, default=1, help='Number of timesteps')
-    parser.add_argument('--seed', type=int, default=1123124, help='random seed')
 
     parser.add_argument('--gradient_clipping', type=float, default=0, help='Initial weight decay.')
     parser.add_argument('--optimizer_class', type=str, default=alg_specific_settings['optimizer_class'], help='Optimizer type.')
@@ -364,18 +331,7 @@ elif dataset_to_use == 'CAT':
     # # # # # #############################################################################################################################
 
 elif dataset_to_use == 'FLOWERS':
-    parser = argparse.ArgumentParser(description='Tensorflow Gan Models')
     parser.add_argument('--global_exp_dir', type=str, default='./'+global_experiment_name+'FLOWERS', help='Directory to put the experiments.')
-    parser.add_argument('--exp_dir_postfix', type=str, default='', help='Directory to put the experiment postfix.')
-    parser.add_argument('--dataset_dir', type=str, default='../dataset/dataset_both2/scripted/*.npz', help='Directory of data.')
-    parser.add_argument('--save_checkpoints', type=bool, default=True, help='store the checkpoints?')
-    parser.add_argument('--restore_dir', type=str, default='/7cb1611a0a584269a019dc8342aee213/checkpoint/', help='Directory of restore experiment.')
-    parser.add_argument('--restore', type=bool, default=False, help='Restore model.')
-    parser.add_argument('--gpu', type=str, default='0', help='gpu to use.')
-    parser.add_argument('--epochs', type=int, default=1000000000, help='Number of epochs to train.')
-    parser.add_argument('--batch_size', type=int, default=50, help='Input batch size for training.')
-    parser.add_argument('--time_steps', type=int, default=1, help='Number of timesteps')
-    parser.add_argument('--seed', type=int, default=1123124, help='random seed')
 
     parser.add_argument('--gradient_clipping', type=float, default=0, help='Initial weight decay.')
     parser.add_argument('--optimizer_class', type=str, default=alg_specific_settings['optimizer_class'], help='Optimizer type.')
@@ -430,18 +386,7 @@ elif dataset_to_use == 'FLOWERS':
     # # # # #############################################################################################################################
 
 elif dataset_to_use == 'CUB':
-    parser = argparse.ArgumentParser(description='Tensorflow Gan Models')
     parser.add_argument('--global_exp_dir', type=str, default='./'+global_experiment_name+'CUB', help='Directory to put the experiments.')
-    parser.add_argument('--exp_dir_postfix', type=str, default='', help='Directory to put the experiment postfix.')
-    parser.add_argument('--dataset_dir', type=str, default='../dataset/dataset_both2/scripted/*.npz', help='Directory of data.')
-    parser.add_argument('--save_checkpoints', type=bool, default=True, help='store the checkpoints?')
-    parser.add_argument('--restore_dir', type=str, default='/7cb1611a0a584269a019dc8342aee213/checkpoint/', help='Directory of restore experiment.')
-    parser.add_argument('--restore', type=bool, default=False, help='Restore model.')
-    parser.add_argument('--gpu', type=str, default='0', help='gpu to use.')
-    parser.add_argument('--epochs', type=int, default=1000000000, help='Number of epochs to train.')
-    parser.add_argument('--batch_size', type=int, default=50, help='Input batch size for training.')
-    parser.add_argument('--time_steps', type=int, default=1, help='Number of timesteps')
-    parser.add_argument('--seed', type=int, default=1123124, help='random seed')
 
     parser.add_argument('--gradient_clipping', type=float, default=0, help='Initial weight decay.')
     parser.add_argument('--optimizer_class', type=str, default=alg_specific_settings['optimizer_class'], help='Optimizer type.')
@@ -497,18 +442,7 @@ elif dataset_to_use == 'CUB':
     # # #############################################################################################################################
 
 elif dataset_to_use == 'CIFAR10':
-    parser = argparse.ArgumentParser(description='Tensorflow Gan Models')
     parser.add_argument('--global_exp_dir', type=str, default='./'+global_experiment_name+'CIFAR10', help='Directory to put the experiments.')
-    parser.add_argument('--exp_dir_postfix', type=str, default='', help='Directory to put the experiment postfix.')
-    parser.add_argument('--dataset_dir', type=str, default='../dataset/dataset_both2/scripted/*.npz', help='Directory of data.')
-    parser.add_argument('--save_checkpoints', type=bool, default=True, help='store the checkpoints?')
-    parser.add_argument('--restore_dir', type=str, default='/7cb1611a0a584269a019dc8342aee213/checkpoint/', help='Directory of restore experiment.')
-    parser.add_argument('--restore', type=bool, default=False, help='Restore model.')
-    parser.add_argument('--gpu', type=str, default='0', help='gpu to use.')
-    parser.add_argument('--epochs', type=int, default=1000000000, help='Number of epochs to train.')
-    parser.add_argument('--batch_size', type=int, default=50, help='Input batch size for training.')
-    parser.add_argument('--time_steps', type=int, default=1, help='Number of timesteps')
-    parser.add_argument('--seed', type=int, default=1123124, help='random seed')
 
     parser.add_argument('--gradient_clipping', type=float, default=0, help='Initial weight decay.')
     parser.add_argument('--optimizer_class', type=str, default=alg_specific_settings['optimizer_class'], help='Optimizer type.')
@@ -565,18 +499,7 @@ elif dataset_to_use == 'CIFAR10':
     #############################################################################################################################
 
 elif dataset_to_use == 'MNIST':
-    parser = argparse.ArgumentParser(description='Tensorflow Gan Models')
     parser.add_argument('--global_exp_dir', type=str, default='./'+global_experiment_name+'MNIST', help='Directory to put the experiments.')
-    parser.add_argument('--exp_dir_postfix', type=str, default='', help='Directory to put the experiment postfix.')
-    parser.add_argument('--dataset_dir', type=str, default='../dataset/dataset_both2/scripted/*.npz', help='Directory of data.')
-    parser.add_argument('--save_checkpoints', type=bool, default=True, help='store the checkpoints?')
-    parser.add_argument('--restore_dir', type=str, default='/7cb1611a0a584269a019dc8342aee213/checkpoint/', help='Directory of restore experiment.')
-    parser.add_argument('--restore', type=bool, default=False, help='Restore model.')
-    parser.add_argument('--gpu', type=str, default='0', help='gpu to use.')
-    parser.add_argument('--epochs', type=int, default=1000000000, help='Number of epochs to train.')
-    parser.add_argument('--batch_size', type=int, default=50, help='Input batch size for training.')
-    parser.add_argument('--time_steps', type=int, default=1, help='Number of timesteps')
-    parser.add_argument('--seed', type=int, default=1123124, help='random seed')
 
     parser.add_argument('--gradient_clipping', type=float, default=0, help='Initial weight decay.')
     parser.add_argument('--optimizer_class', type=str, default=alg_specific_settings['optimizer_class'], help='Optimizer type.')
@@ -633,18 +556,7 @@ elif dataset_to_use == 'MNIST':
     #############################################################################################################################
 
 elif dataset_to_use == 'TOY':
-    parser = argparse.ArgumentParser(description='Tensorflow Gan Models')
     parser.add_argument('--global_exp_dir', type=str, default='./'+global_experiment_name+'TOY', help='Directory to put the experiments.')
-    parser.add_argument('--exp_dir_postfix', type=str, default='', help='Directory to put the experiment postfix.')
-    parser.add_argument('--dataset_dir', type=str, default='../dataset/dataset_both2/scripted/*.npz', help='Directory of data.')
-    parser.add_argument('--save_checkpoints', type=bool, default=True, help='store the checkpoints?')
-    parser.add_argument('--restore_dir', type=str, default='/7cb1611a0a584269a019dc8342aee213/checkpoint/', help='Directory of restore experiment.')
-    parser.add_argument('--restore', type=bool, default=False, help='Restore model.')
-    parser.add_argument('--gpu', type=str, default='0', help='gpu to use.')
-    parser.add_argument('--epochs', type=int, default=1000000000, help='Number of epochs to train.')
-    parser.add_argument('--batch_size', type=int, default=50, help='Input batch size for training.')
-    parser.add_argument('--time_steps', type=int, default=1, help='Number of timesteps')
-    parser.add_argument('--seed', type=int, default=1123124, help='random seed')
 
     parser.add_argument('--gradient_clipping', type=float, default=0, help='Initial weight decay.')
     parser.add_argument('--optimizer_class', type=str, default=alg_specific_settings['optimizer_class'], help='Optimizer type.')
@@ -1557,4 +1469,3 @@ with tf.Graph().as_default():
 # 'critic_reg_mode': ['Uniform Lipschitz',], 'enc_reg_strength': 10, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 20, 'cri_reg_strength': 1}
 # 'critic_reg_mode': ['Coupling Gradient Vector','Trivial Lipschitz'], 'enc_reg_strength': 10, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 20, 'cri_reg_strength': 1}
 # 'critic_reg_mode': ['Coupling Gradient Vector', 'Uniform Lipschitz'], 'enc_reg_strength': 10, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 20, 'cri_reg_strength': 1}
-
