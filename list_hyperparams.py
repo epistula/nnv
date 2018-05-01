@@ -14,7 +14,8 @@ from os.path import isfile, join
 import subprocess
 import re
 
-path_sources = ['./experiments*/*/', './EEEexperiments*/*/',]
+# path_sources = ['./experiments*/*/', './EEEexperiments*/*/',]
+path_sources = ['/Users/MeVlana/CloudExperiments/experiments*/*/', '/Users/MeVlana/CloudExperiments/EEEexperiments*/*/',]
 
 for path_source in path_sources:
     list_experiment_folders = glob.glob(path_source)

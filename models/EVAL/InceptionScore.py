@@ -277,8 +277,10 @@ class InceptionScore():
         assert(not reset)
         print('Trying to load from preprocessed Inception statistics file: ', preprocessed_path)
         f = np.load(preprocessed_path)
-        real_activation_mu, real_activation_sigma, real_inception_mean, real_inception_std = \
-          f['real_activation_mu'][:], f['real_activation_sigma'][:], f['real_inception_mean'][:], f['real_inception_std'][:]
+        if len(f['real_inception_std'].shape) == 0:
+          real_activation_mu, real_activation_sigma, real_inception_mean, real_inception_std = f['real_activation_mu'][:], f['real_activation_sigma'][:], f['real_inception_mean']+0, f['real_inception_std']+0
+        else:
+          real_activation_mu, real_activation_sigma, real_inception_mean, real_inception_std = f['real_activation_mu'][:], f['real_activation_sigma'][:], f['real_inception_mean'][:], f['real_inception_std'][:]
         f.close()
       except: 
         print('Failed. Creating file for Inception statistics.')

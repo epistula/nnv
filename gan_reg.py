@@ -3,6 +3,7 @@ import sys
 import inspect
 import traceback
 
+import gc
 import os
 import pdb
 import time
@@ -29,68 +30,51 @@ if Algorithm == 'WAE':
                              'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 1, 'n_filter': 128, 
                              'encoder_mode': 'UnivApprox', 'divergence_mode': 'NS-GAN', 'dual_dist_mode': '', 
                              'enc_normalization_mode': 'Layer Norm', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'Layer Norm', 
-                             'critic_reg_mode': [], 'enc_reg_strength': 10, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 'cri_reg_strength': 0}
+                             'enc_reg_strength': 10, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 
+                             'critic_reg_mode': [], 'cri_reg_strength': 0, 'lambda_mix': 0.25}
 elif Algorithm == 'WAEVanilla':
     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0.5, 'beta2': 0.999,  
                              'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 1, 'n_filter': 128, 
                              'encoder_mode': 'UnivApprox', 'divergence_mode': 'NS-GAN', 'dual_dist_mode': '', 
                              'enc_normalization_mode': 'Layer Norm', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'Layer Norm', 
-                             'critic_reg_mode': [], 'enc_reg_strength': 10, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 'cri_reg_strength': 0}
+                             'enc_reg_strength': 10, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 
+                             'critic_reg_mode': [], 'cri_reg_strength': 0, 'lambda_mix': 0.25}
 elif Algorithm == 'WGANGP':
     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0.5, 'beta2': 0.9,
                              'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 5, 'n_filter': 128,
                              'encoder_mode': 'UnivApprox', 'divergence_mode': 'NS-GAN', 'dual_dist_mode': 'Prior', 
                              'enc_normalization_mode': 'Layer Norm', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'Layer Norm', 
-                             'critic_reg_mode': ['Trivial Gradient Norm',], 'enc_reg_strength': 20, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 'cri_reg_strength': 10}
+                             'enc_reg_strength': 20, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 
+                             'critic_reg_mode': ['Trivial Gradient Norm',], 'cri_reg_strength': 10, 'lambda_mix': 0.25}
 elif Algorithm == 'PDWGAN':
     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0.5, 'beta2': 0.9,
                              'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 5, 'n_filter': 128,
                              'encoder_mode': 'UnivApprox', 'divergence_mode': 'NS-GAN', 'dual_dist_mode': 'Prior', 
                              'enc_normalization_mode': 'Layer Norm', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'Layer Norm', 
-                             'critic_reg_mode': ['Coupling Gradient Vector',], 'enc_reg_strength': 20, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 'cri_reg_strength': 0.1}
+                             'enc_reg_strength': 20, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 
+                             'critic_reg_mode': ['Coupling Gradient Vector',], 'cri_reg_strength': 0.1, 'lambda_mix': 0.25}
 elif Algorithm == 'WGANGPCannon':
     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0.5, 'beta2': 0.9,
                              'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 5, 'n_filter': 128,
                              'encoder_mode': 'UnivApprox', 'divergence_mode': 'MMD', 'dual_dist_mode': 'Prior', 
                              'enc_normalization_mode': 'None', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'None', 
-                             'critic_reg_mode': ['Trivial Gradient Norm',], 'enc_reg_strength': 100, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 'cri_reg_strength': 10}
+                             'enc_reg_strength': 100, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 
+                             'critic_reg_mode': ['Trivial Gradient Norm',], 'cri_reg_strength': 10, 'lambda_mix': 0.25}
 elif Algorithm == 'PDWGANCannon':
     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0.5, 'beta2': 0.9,
                              'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 5, 'n_filter': 128,
                              'encoder_mode': 'UnivApprox', 'divergence_mode': 'MMD', 'dual_dist_mode': 'Prior', 
                              'enc_normalization_mode': 'None', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'None', 
-                             'critic_reg_mode': ['Coupling Gradient Vector',], 'enc_reg_strength': 100, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 'cri_reg_strength': 1}
+                             'enc_reg_strength': 100, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 
+                             'critic_reg_mode': ['Coupling Gradient Vector',], 'cri_reg_strength': 1, 'lambda_mix': 0.25}
 elif Algorithm == 'PDWGANCannon2':
     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0.5, 'beta2': 0.9,
-                             'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 5, 'n_filter': 128,
-                             'encoder_mode': 'UnivApprox', 'divergence_mode': 'MMD', 'dual_dist_mode': 'CouplingAndPrior', 
-                             'enc_normalization_mode': 'None', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'None', 
-                             'critic_reg_mode': ['Coupling Gradient Vector',], 'enc_reg_strength': 100, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 'cri_reg_strength': 10}
-# elif Algorithm == 'PDWGAN':
-#     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0., 'beta2': 0.9,
-#                              'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 5, 'n_filter': 64,
-#                              'encoder_mode': 'UnivApprox', 'divergence_mode': 'INV-MMD', 'dual_dist_mode': 'Prior', 
-#                              'enc_normalization_mode': 'Layer Norm', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'Layer Norm', 
-#                              'critic_reg_mode': ['Coupling Gradient Vector',], 'enc_reg_strength': 100, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 'cri_reg_strength': 1}
-# elif Algorithm == 'PDWGAN':
-#     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0., 'beta2': 0.9,
-#                              'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 5, 'n_filter': 64,
-#                              'encoder_mode': 'UnivApprox', 'divergence_mode': 'INV-MMD', 'dual_dist_mode': 'Prior', 
-#                              'enc_normalization_mode': 'Layer Norm', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'Layer Norm', 
-#                              'critic_reg_mode': ['Coupling Gradient Vector',], 'enc_reg_strength': 20, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 'cri_reg_strength': 1}
-# elif Algorithm == 'PDWGAN':
-#     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0., 'beta2': 0.9,
-#                              'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 5, 'n_filter': 64,
-#                              'encoder_mode': 'UnivApprox', 'divergence_mode': 'INV-MMD', 'dual_dist_mode': 'Prior', 
-#                              'enc_normalization_mode': 'Layer Norm', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'Layer Norm', 
-#                              'critic_reg_mode': ['Coupling Gradient Vector',], 'enc_reg_strength': 5, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 'cri_reg_strength': 1}
-
-elif Algorithm == 'PDWGANTest':
-    alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0., 'beta2': 0.9,
-                             'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 10, 'n_filter': 64,
-                             'encoder_mode': 'UnivApprox', 'gen_normalization_mode': 'Batch Norm', 'divergence_mode': 'INV-MMD', 'dual_dist_mode': 'Coupling', 
+                             'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 3, 'n_filter': 128,
+                             'encoder_mode': 'UnivApprox', 'divergence_mode': 'NS-GAN', 'dual_dist_mode': 'CouplingAndPrior', 
                              'enc_normalization_mode': 'Layer Norm', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'Layer Norm', 
-                             'critic_reg_mode': ['Coupling Gradient Vector',], 'enc_reg_strength': 10, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 'cri_reg_strength': 1}
+                             'enc_reg_strength': 20, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 
+                             'critic_reg_mode': ['Coupling Gradient Vector',], 'cri_reg_strength': 10, 'lambda_mix': 0.25}
+
 
 global_experiment_name = 'EEEexperimentsLast-'+Algorithm+'-'
 
@@ -149,6 +133,7 @@ if dataset_to_use == 'IMAGENET':
     parser.add_argument('--encoder_mode', type=str, default=alg_specific_settings['encoder_mode'], help='encoder mode.')
     parser.add_argument('--divergence_mode', type=str, default=alg_specific_settings['divergence_mode'], help='divergence mode.')
     parser.add_argument('--dual_dist_mode', type=str, default=alg_specific_settings['dual_dist_mode'], help='dual distribution mode.')
+    parser.add_argument('--lambda_mix', type=str, default=alg_specific_settings['lambda_mix'], help='mixture amount for coupling.')
     parser.add_argument('--critic_reg_mode', type=list, default=alg_specific_settings['critic_reg_mode'], help='critic regularizer mode.')
     parser.add_argument('--enc_reg_strength', type=float, default=alg_specific_settings['enc_reg_strength'], help='encoder regularization strength')
     parser.add_argument('--enc_inv_MMD_n_trans', type=float, default=alg_specific_settings['enc_inv_MMD_n_trans'], help='encoder invariant MMD num of transforms')
@@ -206,6 +191,7 @@ if dataset_to_use == 'BEDROOM':
     parser.add_argument('--encoder_mode', type=str, default=alg_specific_settings['encoder_mode'], help='encoder mode.')
     parser.add_argument('--divergence_mode', type=str, default=alg_specific_settings['divergence_mode'], help='divergence mode.')
     parser.add_argument('--dual_dist_mode', type=str, default=alg_specific_settings['dual_dist_mode'], help='dual distribution mode.')
+    parser.add_argument('--lambda_mix', type=str, default=alg_specific_settings['lambda_mix'], help='mixture amount for coupling.')
     parser.add_argument('--critic_reg_mode', type=list, default=alg_specific_settings['critic_reg_mode'], help='critic regularizer mode.')
     parser.add_argument('--enc_reg_strength', type=float, default=alg_specific_settings['enc_reg_strength'], help='encoder regularization strength')
     parser.add_argument('--enc_inv_MMD_n_trans', type=float, default=alg_specific_settings['enc_inv_MMD_n_trans'], help='encoder invariant MMD num of transforms')
@@ -262,6 +248,7 @@ elif dataset_to_use == 'CELEB':
     parser.add_argument('--encoder_mode', type=str, default=alg_specific_settings['encoder_mode'], help='encoder mode.')
     parser.add_argument('--divergence_mode', type=str, default=alg_specific_settings['divergence_mode'], help='divergence mode.')
     parser.add_argument('--dual_dist_mode', type=str, default=alg_specific_settings['dual_dist_mode'], help='dual distribution mode.')
+    parser.add_argument('--lambda_mix', type=str, default=alg_specific_settings['lambda_mix'], help='mixture amount for coupling.')
     parser.add_argument('--critic_reg_mode', type=list, default=alg_specific_settings['critic_reg_mode'], help='critic regularizer mode.')
     parser.add_argument('--enc_reg_strength', type=float, default=alg_specific_settings['enc_reg_strength'], help='encoder regularization strength')
     parser.add_argument('--enc_inv_MMD_n_trans', type=float, default=alg_specific_settings['enc_inv_MMD_n_trans'], help='encoder invariant MMD num of transforms')
@@ -318,6 +305,7 @@ elif dataset_to_use == 'CAT':
     parser.add_argument('--encoder_mode', type=str, default=alg_specific_settings['encoder_mode'], help='encoder mode.')
     parser.add_argument('--divergence_mode', type=str, default=alg_specific_settings['divergence_mode'], help='divergence mode.')
     parser.add_argument('--dual_dist_mode', type=str, default=alg_specific_settings['dual_dist_mode'], help='dual distribution mode.')
+    parser.add_argument('--lambda_mix', type=str, default=alg_specific_settings['lambda_mix'], help='mixture amount for coupling.')
     parser.add_argument('--critic_reg_mode', type=list, default=alg_specific_settings['critic_reg_mode'], help='critic regularizer mode.')
     parser.add_argument('--enc_reg_strength', type=float, default=alg_specific_settings['enc_reg_strength'], help='encoder regularization strength')
     parser.add_argument('--enc_inv_MMD_n_trans', type=float, default=alg_specific_settings['enc_inv_MMD_n_trans'], help='encoder invariant MMD num of transforms')
@@ -374,6 +362,7 @@ elif dataset_to_use == 'FLOWERS':
     parser.add_argument('--encoder_mode', type=str, default=alg_specific_settings['encoder_mode'], help='encoder mode.')
     parser.add_argument('--divergence_mode', type=str, default=alg_specific_settings['divergence_mode'], help='divergence mode.')
     parser.add_argument('--dual_dist_mode', type=str, default=alg_specific_settings['dual_dist_mode'], help='dual distribution mode.')
+    parser.add_argument('--lambda_mix', type=str, default=alg_specific_settings['lambda_mix'], help='mixture amount for coupling.')
     parser.add_argument('--critic_reg_mode', type=list, default=alg_specific_settings['critic_reg_mode'], help='critic regularizer mode.')
     parser.add_argument('--enc_reg_strength', type=float, default=alg_specific_settings['enc_reg_strength'], help='encoder regularization strength')
     parser.add_argument('--enc_inv_MMD_n_trans', type=float, default=alg_specific_settings['enc_inv_MMD_n_trans'], help='encoder invariant MMD num of transforms')
@@ -429,6 +418,7 @@ elif dataset_to_use == 'CUB':
     parser.add_argument('--encoder_mode', type=str, default=alg_specific_settings['encoder_mode'], help='encoder mode.')
     parser.add_argument('--divergence_mode', type=str, default=alg_specific_settings['divergence_mode'], help='divergence mode.')
     parser.add_argument('--dual_dist_mode', type=str, default=alg_specific_settings['dual_dist_mode'], help='dual distribution mode.')
+    parser.add_argument('--lambda_mix', type=str, default=alg_specific_settings['lambda_mix'], help='mixture amount for coupling.')
     parser.add_argument('--critic_reg_mode', type=list, default=alg_specific_settings['critic_reg_mode'], help='critic regularizer mode.')
     parser.add_argument('--enc_reg_strength', type=float, default=alg_specific_settings['enc_reg_strength'], help='encoder regularization strength')
     parser.add_argument('--enc_inv_MMD_n_trans', type=float, default=alg_specific_settings['enc_inv_MMD_n_trans'], help='encoder invariant MMD num of transforms')
@@ -486,6 +476,7 @@ elif dataset_to_use == 'CIFAR10':
     parser.add_argument('--encoder_mode', type=str, default=alg_specific_settings['encoder_mode'], help='encoder mode.')
     parser.add_argument('--divergence_mode', type=str, default=alg_specific_settings['divergence_mode'], help='divergence mode.')
     parser.add_argument('--dual_dist_mode', type=str, default=alg_specific_settings['dual_dist_mode'], help='dual distribution mode.')
+    parser.add_argument('--lambda_mix', type=str, default=alg_specific_settings['lambda_mix'], help='mixture amount for coupling.')
     parser.add_argument('--critic_reg_mode', type=list, default=alg_specific_settings['critic_reg_mode'], help='critic regularizer mode.')
     parser.add_argument('--enc_reg_strength', type=float, default=alg_specific_settings['enc_reg_strength'], help='encoder regularization strength')
     parser.add_argument('--enc_inv_MMD_n_trans', type=float, default=alg_specific_settings['enc_inv_MMD_n_trans'], help='encoder invariant MMD num of transforms')
@@ -543,6 +534,7 @@ elif dataset_to_use == 'MNIST':
     parser.add_argument('--encoder_mode', type=str, default=alg_specific_settings['encoder_mode'], help='encoder mode.')
     parser.add_argument('--divergence_mode', type=str, default=alg_specific_settings['divergence_mode'], help='divergence mode.')
     parser.add_argument('--dual_dist_mode', type=str, default=alg_specific_settings['dual_dist_mode'], help='dual distribution mode.')
+    parser.add_argument('--lambda_mix', type=str, default=alg_specific_settings['lambda_mix'], help='mixture amount for coupling.')
     parser.add_argument('--critic_reg_mode', type=list, default=alg_specific_settings['critic_reg_mode'], help='critic regularizer mode.')
     parser.add_argument('--enc_reg_strength', type=float, default=alg_specific_settings['enc_reg_strength'], help='encoder regularization strength')
     parser.add_argument('--enc_inv_MMD_n_trans', type=float, default=alg_specific_settings['enc_inv_MMD_n_trans'], help='encoder invariant MMD num of transforms')
@@ -599,6 +591,7 @@ elif dataset_to_use == 'TOY':
     parser.add_argument('--encoder_mode', type=str, default=alg_specific_settings['encoder_mode'], help='encoder mode.')
     parser.add_argument('--divergence_mode', type=str, default=alg_specific_settings['divergence_mode'], help='divergence mode.')
     parser.add_argument('--dual_dist_mode', type=str, default=alg_specific_settings['dual_dist_mode'], help='dual distribution mode.')
+    parser.add_argument('--lambda_mix', type=str, default=alg_specific_settings['lambda_mix'], help='mixture amount for coupling.')
     parser.add_argument('--critic_reg_mode', type=list, default=alg_specific_settings['critic_reg_mode'], help='critic regularizer mode.')
     parser.add_argument('--enc_reg_strength', type=float, default=alg_specific_settings['enc_reg_strength'], help='encoder regularization strength')
     parser.add_argument('--enc_inv_MMD_n_trans', type=float, default=alg_specific_settings['enc_inv_MMD_n_trans'], help='encoder invariant MMD num of transforms')
@@ -1184,7 +1177,7 @@ with tf.Graph().as_default():
         print('Experiment Directory: ', global_args.exp_dir)
 
         global_args.curr_epoch += 1            
-
+        gc.collect()
 
 
 
