@@ -391,14 +391,14 @@ class Model():
 
         self.cri_reg_cost = 0
         if self.compute_all_regularizers or 'Coupling Gradient Vector' in self.config['critic_reg_mode']:
-            # if self.input_sample['image'] is not None:
-            #     self.coupling_line_grad_vector_penalties = self.euclidean_distance_squared(self.coupling_line_grad, self.desired_slope, axis=[-1,-2,-3], keep_dims=False)[:,:,np.newaxis]
-            # else:
-            #     self.coupling_line_grad_vector_penalties = self.euclidean_distance_squared(self.coupling_line_grad, self.desired_slope, axis=[-1,], keep_dims=False)[:,:,np.newaxis]
             if self.input_sample['image'] is not None:
-                self.coupling_line_grad_vector_penalties = helper.safe_tf_sqrt(self.euclidean_distance_squared(self.coupling_line_grad, self.desired_slope, axis=[-1,-2,-3], keep_dims=False))[:,:,np.newaxis]
+                self.coupling_line_grad_vector_penalties = self.euclidean_distance_squared(self.coupling_line_grad, self.desired_slope, axis=[-1,-2,-3], keep_dims=False)[:,:,np.newaxis]
             else:
-                self.coupling_line_grad_vector_penalties = helper.safe_tf_sqrt(self.euclidean_distance_squared(self.coupling_line_grad, self.desired_slope, axis=[-1,], keep_dims=False))[:,:,np.newaxis]
+                self.coupling_line_grad_vector_penalties = self.euclidean_distance_squared(self.coupling_line_grad, self.desired_slope, axis=[-1,], keep_dims=False)[:,:,np.newaxis]
+            # if self.input_sample['image'] is not None:
+            #     self.coupling_line_grad_vector_penalties = helper.safe_tf_sqrt(self.euclidean_distance_squared(self.coupling_line_grad, self.desired_slope, axis=[-1,-2,-3], keep_dims=False))[:,:,np.newaxis]
+            # else:
+            #     self.coupling_line_grad_vector_penalties = helper.safe_tf_sqrt(self.euclidean_distance_squared(self.coupling_line_grad, self.desired_slope, axis=[-1,], keep_dims=False))[:,:,np.newaxis]
                         
 
             self.mean_coupling_line_grad_vector_penalties = tf.reduce_mean(self.coupling_line_grad_vector_penalties)
