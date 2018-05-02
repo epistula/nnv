@@ -380,7 +380,6 @@ class Critic():
 
 					output = lib.ops.conv2d.Conv2D('Critic.2', self.config['n_filter'], 2*self.config['n_filter'], 5, output, stride=2)
 					if self.normalization_mode == 'Layer Norm':
-						pdb.set_trace()
 						output = helper.conv_layer_norm_layer(output, channel_index=1)
 					elif self.normalization_mode == 'Batch Norm': 
 						output = lib.ops.batchnorm.Batchnorm('Critic.BN2', [0,2,3], output)
@@ -388,7 +387,6 @@ class Critic():
 
 					output = lib.ops.conv2d.Conv2D('Critic.3', 2*self.config['n_filter'], 4*self.config['n_filter'], 5, output, stride=2)					
 					if self.normalization_mode == 'Layer Norm':
-						pdb.set_trace()
 						output = helper.conv_layer_norm_layer(output, channel_index=1)
 					elif self.normalization_mode == 'Batch Norm':
 						output = lib.ops.batchnorm.Batchnorm('Critic.BN3', [0,2,3], output) 
@@ -407,7 +405,6 @@ class Critic():
 
 					output = lib.ops.conv2d.Conv2D('Critic.2', self.config['n_filter'], 2*self.config['n_filter'], 5, output, stride=2)
 					if self.normalization_mode == 'Layer Norm':
-						pdb.set_trace()
 						output = helper.conv_layer_norm_layer(output, channel_index=1)
 					elif self.normalization_mode == 'Batch Norm': 
 						output = lib.ops.batchnorm.Batchnorm('Critic.BN2', [0,2,3], output)
@@ -415,7 +412,6 @@ class Critic():
 
 					output = lib.ops.conv2d.Conv2D('Critic.3', 2*self.config['n_filter'], 4*self.config['n_filter'], 5, output, stride=2)					
 					if self.normalization_mode == 'Layer Norm':
-						pdb.set_trace()
 						output = helper.conv_layer_norm_layer(output, channel_index=1)
 					elif self.normalization_mode == 'Batch Norm':
 						output = lib.ops.batchnorm.Batchnorm('Critic.BN3', [0,2,3], output) 
@@ -433,7 +429,6 @@ class Critic():
 
 					output = lib.ops.conv2d.Conv2D('Critic.2', self.config['n_filter'], 2*self.config['n_filter'], 5, output, stride=2)
 					if self.normalization_mode == 'Layer Norm':
-						pdb.set_trace()
 						output = helper.conv_layer_norm_layer(output, channel_index=1)
 					elif self.normalization_mode == 'Batch Norm': 
 						output = lib.ops.batchnorm.Batchnorm('Critic.BN2', [0,2,3], output)
@@ -441,7 +436,6 @@ class Critic():
 
 					output = lib.ops.conv2d.Conv2D('Critic.3', 2*self.config['n_filter'], 4*self.config['n_filter'], 5, output, stride=2)					
 					if self.normalization_mode == 'Layer Norm':
-						pdb.set_trace()
 						output = helper.conv_layer_norm_layer(output, channel_index=1)
 					elif self.normalization_mode == 'Batch Norm':
 						output = lib.ops.batchnorm.Batchnorm('Critic.BN3', [0,2,3], output) 
@@ -449,7 +443,6 @@ class Critic():
 
 					output = lib.ops.conv2d.Conv2D('Critic.4', 4*self.config['n_filter'], 4*self.config['n_filter'], 5, output, stride=2)					
 					if self.normalization_mode == 'Layer Norm':
-						pdb.set_trace()
 						output = helper.conv_layer_norm_layer(output, channel_index=1)
 					elif self.normalization_mode == 'Batch Norm':
 						output = lib.ops.batchnorm.Batchnorm('Critic.BN4', [0,2,3], output) 
