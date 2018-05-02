@@ -244,10 +244,10 @@ def layer_norm(x, norm_axes, channel_index, channel_offset, channel_scale):
     # norm_axes = [-1,-2,-3]
     # norm_axes = [-1]
     mean, var = tf.nn.moments(x, norm_axes, keep_dims=True)
-    pdb.set_trace()
-    	
-    offset = tf.reshape(channel_offset, [1 for i in range(len(norm_axes)-1)] + [-1])
-    scale = tf.reshape(channel_scale, [1 for i in range(len(norm_axes)-1)] + [-1])
+    frame = [1, 1, 1]
+    frame[channel_index-1] = -1
+    offset = tf.reshape(channel_offset, frame)
+    scale = tf.reshape(channel_scale, frame)
     return tf.nn.batch_normalization(x, mean, var, offset, scale+1, 1e-5)
 
 def get_object_from_collection(object_type, name):
