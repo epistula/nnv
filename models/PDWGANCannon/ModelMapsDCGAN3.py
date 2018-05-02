@@ -121,21 +121,21 @@ class Encoder():
 
 					lay1_image = tf.layers.conv2d(inputs=image_input, filters=self.config['n_filter'], kernel_size=[5, 5], strides=[2, 2], padding="valid", use_bias=True, activation=None)
 					if self.normalization_mode == 'Layer Norm': 
-						lay2_image = self.activation_function(helper.conv_layer_norm_layer(lay1_image))
+						lay2_image = self.activation_function(helper.conv_layer_norm_layer(lay1_image, channel_index=3))
 					elif self.normalization_mode == 'Batch Norm': 
 						lay2_image = self.activation_function(helper.batch_norm()(lay1_image))
 					else: lay2_image = self.activation_function(lay1_image)
 
 					lay3_image = tf.layers.conv2d(inputs=lay2_image, filters=1*self.config['n_filter'], kernel_size=[5, 5], strides=[1, 1], padding="valid", use_bias=True, activation=None)
 					if self.normalization_mode == 'Layer Norm': 
-						lay4_image = self.activation_function(helper.conv_layer_norm_layer(lay3_image))
+						lay4_image = self.activation_function(helper.conv_layer_norm_layer(lay3_image, channel_index=3))
 					elif self.normalization_mode == 'Batch Norm': 
 						lay4_image = self.activation_function(helper.batch_norm()(lay3_image))
 					else: lay4_image = self.activation_function(lay3_image)
 
 					lay5_image = tf.layers.conv2d(inputs=lay4_image, filters=2*self.config['n_filter'], kernel_size=[4, 4], strides=[1, 1], padding="valid", use_bias=True, activation=None)
 					if self.normalization_mode == 'Layer Norm': 
-						lay6_image = self.activation_function(helper.conv_layer_norm_layer(lay5_image))
+						lay6_image = self.activation_function(helper.conv_layer_norm_layer(lay5_image, channel_index=3))
 					elif self.normalization_mode == 'Batch Norm': 
 						lay6_image = self.activation_function(helper.batch_norm()(lay5_image))
 					else: lay6_image = self.activation_function(lay5_image)
@@ -148,22 +148,21 @@ class Encoder():
 					
 					lay1_image = tf.layers.conv2d(inputs=image_input, filters=self.config['n_filter'], kernel_size=[5, 5], strides=[2, 2], padding="valid", use_bias=True, activation=None)
 					if self.normalization_mode == 'Layer Norm': 
-						pdb.set_trace()
-						lay2_image = self.activation_function(helper.conv_layer_norm_layer(lay1_image))
+						lay2_image = self.activation_function(helper.conv_layer_norm_layer(lay1_image, channel_index=3))
 					elif self.normalization_mode == 'Batch Norm': 
 						lay2_image = self.activation_function(helper.batch_norm()(lay1_image))
 					else: lay2_image = self.activation_function(lay1_image)
 
 					lay3_image = tf.layers.conv2d(inputs=lay2_image, filters=1*self.config['n_filter'], kernel_size=[5, 5], strides=[1, 1], padding="valid", use_bias=True, activation=None)
 					if self.normalization_mode == 'Layer Norm': 
-						lay4_image = self.activation_function(helper.conv_layer_norm_layer(lay3_image))
+						lay4_image = self.activation_function(helper.conv_layer_norm_layer(lay3_image, channel_index=3))
 					elif self.normalization_mode == 'Batch Norm': 
 						lay4_image = self.activation_function(helper.batch_norm()(lay3_image))
 					else: lay4_image = self.activation_function(lay3_image)
 					
 					lay5_image = tf.layers.conv2d(inputs=lay4_image, filters=2*self.config['n_filter'], kernel_size=[5, 5], strides=[1, 1], padding="valid", use_bias=True, activation=None)
 					if self.normalization_mode == 'Layer Norm': 
-						lay6_image = self.activation_function(helper.conv_layer_norm_layer(lay5_image))
+						lay6_image = self.activation_function(helper.conv_layer_norm_layer(lay5_image, channel_index=3))
 					elif self.normalization_mode == 'Batch Norm': 
 						lay6_image = self.activation_function(helper.batch_norm()(lay5_image))
 					else: lay6_image = self.activation_function(lay5_image)
@@ -176,28 +175,28 @@ class Encoder():
 
 					lay1_image = tf.layers.conv2d(inputs=image_input, filters=self.config['n_filter'], kernel_size=[5, 5], strides=[2, 2], padding="valid", use_bias=True, activation=None)
 					if self.normalization_mode == 'Layer Norm': 
-						lay2_image = self.activation_function(helper.conv_layer_norm_layer(lay1_image))
+						lay2_image = self.activation_function(helper.conv_layer_norm_layer(lay1_image, channel_index=3))
 					elif self.normalization_mode == 'Batch Norm': 
 						lay2_image = self.activation_function(helper.batch_norm()(lay1_image))
 					else: lay2_image = self.activation_function(lay1_image)
 
 					lay3_image = tf.layers.conv2d(inputs=lay2_image, filters=self.config['n_filter'], kernel_size=[5, 5], strides=[2, 2], padding="valid", use_bias=True, activation=None)
 					if self.normalization_mode == 'Layer Norm': 
-						lay4_image = self.activation_function(helper.conv_layer_norm_layer(lay3_image))
+						lay4_image = self.activation_function(helper.conv_layer_norm_layer(lay3_image, channel_index=3))
 					elif self.normalization_mode == 'Batch Norm': 
 						lay4_image = self.activation_function(helper.batch_norm()(lay3_image))
 					else: lay4_image = self.activation_function(lay3_image)
 
 					lay5_image = tf.layers.conv2d(inputs=lay4_image, filters=2*self.config['n_filter'], kernel_size=[5, 5], strides=[1, 1], padding="valid", use_bias=True, activation=None)
 					if self.normalization_mode == 'Layer Norm': 
-						lay6_image = self.activation_function(helper.conv_layer_norm_layer(lay5_image))
+						lay6_image = self.activation_function(helper.conv_layer_norm_layer(lay5_image, channel_index=3))
 					elif self.normalization_mode == 'Batch Norm': 
 						lay6_image = self.activation_function(helper.batch_norm()(lay5_image))
 					else: lay6_image = self.activation_function(lay5_image)
 
 					lay7_image = tf.layers.conv2d(inputs=lay6_image, filters=3*self.config['n_filter'], kernel_size=[5, 5], strides=[1, 1], padding="valid", use_bias=True, activation=None)
 					if self.normalization_mode == 'Layer Norm': 
-						lay8_image = self.activation_function(helper.conv_layer_norm_layer(lay7_image))
+						lay8_image = self.activation_function(helper.conv_layer_norm_layer(lay7_image, channel_index=3))
 					elif self.normalization_mode == 'Batch Norm': 
 						lay8_image = self.activation_function(helper.batch_norm()(lay7_image))
 					else: lay8_image = self.activation_function(lay7_image)
@@ -382,7 +381,7 @@ class Critic():
 					output = lib.ops.conv2d.Conv2D('Critic.2', self.config['n_filter'], 2*self.config['n_filter'], 5, output, stride=2)
 					if self.normalization_mode == 'Layer Norm':
 						pdb.set_trace()
-						output = helper.conv_layer_norm_layer(output)
+						output = helper.conv_layer_norm_layer(output, channel_index=1)
 					elif self.normalization_mode == 'Batch Norm': 
 						output = lib.ops.batchnorm.Batchnorm('Critic.BN2', [0,2,3], output)
 					output = LeakyReLU(output)
@@ -390,7 +389,7 @@ class Critic():
 					output = lib.ops.conv2d.Conv2D('Critic.3', 2*self.config['n_filter'], 4*self.config['n_filter'], 5, output, stride=2)					
 					if self.normalization_mode == 'Layer Norm':
 						pdb.set_trace()
-						output = helper.conv_layer_norm_layer(output)
+						output = helper.conv_layer_norm_layer(output, channel_index=1)
 					elif self.normalization_mode == 'Batch Norm':
 						output = lib.ops.batchnorm.Batchnorm('Critic.BN3', [0,2,3], output) 
 					output = LeakyReLU(output)
@@ -409,7 +408,7 @@ class Critic():
 					output = lib.ops.conv2d.Conv2D('Critic.2', self.config['n_filter'], 2*self.config['n_filter'], 5, output, stride=2)
 					if self.normalization_mode == 'Layer Norm':
 						pdb.set_trace()
-						output = helper.conv_layer_norm_layer(output)
+						output = helper.conv_layer_norm_layer(output, channel_index=1)
 					elif self.normalization_mode == 'Batch Norm': 
 						output = lib.ops.batchnorm.Batchnorm('Critic.BN2', [0,2,3], output)
 					output = LeakyReLU(output)
@@ -417,7 +416,7 @@ class Critic():
 					output = lib.ops.conv2d.Conv2D('Critic.3', 2*self.config['n_filter'], 4*self.config['n_filter'], 5, output, stride=2)					
 					if self.normalization_mode == 'Layer Norm':
 						pdb.set_trace()
-						output = helper.conv_layer_norm_layer(output)
+						output = helper.conv_layer_norm_layer(output, channel_index=1)
 					elif self.normalization_mode == 'Batch Norm':
 						output = lib.ops.batchnorm.Batchnorm('Critic.BN3', [0,2,3], output) 
 					output = LeakyReLU(output)
@@ -435,7 +434,7 @@ class Critic():
 					output = lib.ops.conv2d.Conv2D('Critic.2', self.config['n_filter'], 2*self.config['n_filter'], 5, output, stride=2)
 					if self.normalization_mode == 'Layer Norm':
 						pdb.set_trace()
-						output = helper.conv_layer_norm_layer(output)
+						output = helper.conv_layer_norm_layer(output, channel_index=1)
 					elif self.normalization_mode == 'Batch Norm': 
 						output = lib.ops.batchnorm.Batchnorm('Critic.BN2', [0,2,3], output)
 					output = LeakyReLU(output)
@@ -443,7 +442,7 @@ class Critic():
 					output = lib.ops.conv2d.Conv2D('Critic.3', 2*self.config['n_filter'], 4*self.config['n_filter'], 5, output, stride=2)					
 					if self.normalization_mode == 'Layer Norm':
 						pdb.set_trace()
-						output = helper.conv_layer_norm_layer(output)
+						output = helper.conv_layer_norm_layer(output, channel_index=1)
 					elif self.normalization_mode == 'Batch Norm':
 						output = lib.ops.batchnorm.Batchnorm('Critic.BN3', [0,2,3], output) 
 					output = LeakyReLU(output)
@@ -451,7 +450,7 @@ class Critic():
 					output = lib.ops.conv2d.Conv2D('Critic.4', 4*self.config['n_filter'], 4*self.config['n_filter'], 5, output, stride=2)					
 					if self.normalization_mode == 'Layer Norm':
 						pdb.set_trace()
-						output = helper.conv_layer_norm_layer(output)
+						output = helper.conv_layer_norm_layer(output, channel_index=1)
 					elif self.normalization_mode == 'Batch Norm':
 						output = lib.ops.batchnorm.Batchnorm('Critic.BN4', [0,2,3], output) 
 					output = LeakyReLU(output)
