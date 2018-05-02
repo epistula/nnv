@@ -235,15 +235,17 @@ class batch_norm(object):
 											scale=True,
 											is_training=train)
 
-def conv_layer_norm_layer(input_layer):
-    input_layer_offset = tf.layers.dense(inputs = tf.ones(shape=(1, 1)), units = input_layer.get_shape().as_list()[-1], use_bias = False, activation = None)[0]
-    input_layer_scale = tf.layers.dense(inputs = tf.ones(shape=(1, 1)), units = input_layer.get_shape().as_list()[-1], use_bias = False, activation = None)[0]
-    return layer_norm(input_layer, [-1,-2,-3], input_layer_offset, input_layer_scale)
+def conv_layer_norm_layer(input_layer, channel_index=3):
+    input_layer_offset = tf.layers.dense(inputs = tf.ones(shape=(1, 1)), units = input_layer.get_shape().as_list()[channel_index], use_bias = False, activation = None)[0]
+    input_layer_scale = tf.layers.dense(inputs = tf.ones(shape=(1, 1)), units = input_layer.get_shape().as_list()[channel_index], use_bias = False, activation = None)[0]
+    return layer_norm(input_layer, [-1,-2,-3], channel_index, input_layer_offset, input_layer_scale)
 
-def layer_norm(x, norm_axes, channel_offset, channel_scale):
+def layer_norm(x, norm_axes, channel_index, channel_offset, channel_scale):
     # norm_axes = [-1,-2,-3]
     # norm_axes = [-1]
-    mean, var = tf.nn.moments(x, norm_axes, keep_dims=True)	
+    mean, var = tf.nn.moments(x, norm_axes, keep_dims=True)
+    pdb.set_trace()
+    	
     offset = tf.reshape(channel_offset, [1 for i in range(len(norm_axes)-1)] + [-1])
     scale = tf.reshape(channel_scale, [1 for i in range(len(norm_axes)-1)] + [-1])
     return tf.nn.batch_normalization(x, mean, var, offset, scale+1, 1e-5)

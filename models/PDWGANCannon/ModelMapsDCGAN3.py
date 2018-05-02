@@ -148,6 +148,7 @@ class Encoder():
 					
 					lay1_image = tf.layers.conv2d(inputs=image_input, filters=self.config['n_filter'], kernel_size=[5, 5], strides=[2, 2], padding="valid", use_bias=True, activation=None)
 					if self.normalization_mode == 'Layer Norm': 
+						pdb.set_trace()
 						lay2_image = self.activation_function(helper.conv_layer_norm_layer(lay1_image))
 					elif self.normalization_mode == 'Batch Norm': 
 						lay2_image = self.activation_function(helper.batch_norm()(lay1_image))
