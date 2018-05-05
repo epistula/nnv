@@ -6,6 +6,7 @@ from __future__ import print_function
 import os
 import sys
 import tarfile
+import gc
 
 import numpy as np
 from six.moves import urllib
@@ -252,9 +253,12 @@ class InceptionScore():
         preds[start:end, :] = pred
       
       print("\nComputing activation statistics.")
+      gc.collect()
       activation_mu = np.mean(activations, axis=0)
+      gc.collect()
       activation_sigma = np.cov(activations, rowvar=False)
-      
+      gc.collect()
+
       print("Computing inception score.")
       scores = []
       splits=10
