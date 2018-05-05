@@ -70,9 +70,9 @@ elif Algorithm == 'PDWGANCannon':
 elif Algorithm == 'PDWGANCannon2':
     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0.5, 'beta2': 0.9,
                              'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 5, 'n_filter': 64,
-                             'encoder_mode': 'Deterministic', 'divergence_mode': 'MMD', 'dual_dist_mode': 'CouplingAndPrior', 
+                             'encoder_mode': 'UnivApprox', 'divergence_mode': 'MMD', 'dual_dist_mode': 'CouplingAndPrior', 
                              'enc_normalization_mode': 'Layer Norm', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'Layer Norm', 
-                             'enc_reg_strength': 100, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 
+                             'enc_reg_strength': 1, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 
                              'critic_reg_mode': ['Coupling Gradient Vector',], 'cri_reg_strength': 1, 'lambda_mix': 0.5}
 
 

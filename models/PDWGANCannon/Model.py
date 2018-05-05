@@ -468,8 +468,8 @@ class Model():
         elif self.config['dual_dist_mode'] == 'Prior':
             self.gen_cost = -self.mean_critic_gen
         elif self.config['dual_dist_mode'] == 'CouplingAndPrior':
-            # self.gen_cost = -(self.config['lambda_mix']*self.mean_critic_rec+(1-self.config['lambda_mix'])*self.mean_critic_gen)
-            self.gen_cost = -(self.config['lambda_mix']*(-self.mean_OT_primal)+(1-self.config['lambda_mix'])*self.mean_critic_gen)
+            self.gen_cost = -(self.config['lambda_mix']*self.mean_critic_rec+(1-self.config['lambda_mix'])*self.mean_critic_gen)
+            # self.gen_cost = -(self.config['lambda_mix']*(-self.mean_OT_primal)+(1-self.config['lambda_mix'])*self.mean_critic_gen)
 
         ### Critic
         if self.config['dual_dist_mode'] == 'Coupling':
