@@ -69,10 +69,10 @@ elif Algorithm == 'PDWGANCannon':
                              'critic_reg_mode': ['Coupling Gradient Vector',], 'cri_reg_strength': 1, 'lambda_mix': 0.25}
 elif Algorithm == 'PDWGANCannon2':
     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0.5, 'beta2': 0.9,
-                             'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 5, 'n_filter': 64,
+                             'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 5, 'n_filter': 128,
                              'encoder_mode': 'UnivApprox', 'divergence_mode': 'MMD', 'dual_dist_mode': 'CouplingAndPrior', 
                              'enc_normalization_mode': 'Layer Norm', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'Layer Norm', 
-                             'enc_reg_strength': 1, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 
+                             'enc_reg_strength': 10, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 
                              'critic_reg_mode': ['Coupling Gradient Vector',], 'cri_reg_strength': 1, 'lambda_mix': 0.5}
 
 
@@ -81,7 +81,7 @@ global_experiment_name = 'EEEexperimentsLastMIX-'+Algorithm+'-'
 parser = argparse.ArgumentParser(description='Tensorflow Gan Models')
 parser.add_argument('--exp_dir_postfix', type=str, default='', help='Directory to put the experiment postfix.')
 parser.add_argument('--save_checkpoints', type=bool, default=True, help='store the checkpoints?')
-parser.add_argument('--restore_dir', type=str, default='/8b51caf2f307417e804f3799f6fa3765/checkpoint/', help='Directory of restore experiment.')
+parser.add_argument('--restore_dir', type=str, default='/c8d9f2e6f41f452d88e2268f2e3dc69a/checkpoint/', help='Directory of restore experiment.')
 parser.add_argument('--restore', type=bool, default=False, help='Restore model.')
 parser.add_argument('--gpu', type=str, default='0', help='gpu to use.')
 parser.add_argument('--epochs', type=int, default=1000000000, help='Number of epochs to train.')

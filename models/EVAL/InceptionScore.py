@@ -227,6 +227,20 @@ class InceptionScore():
     #   fid_value = self.calculate_frechet_distance(model_mu, model_sigma, real_mu, real_sigma)
     #   return fid_value
 
+    def batch_covariance(self, input_mat, mu=None, batch_size=500):
+      if mu is None: mu = np.mean(input_mat, axis=0)
+      input_mat_centered = input_mat-mu[np.newaxis,:]
+      input_size = input_mat_centered.shape[0]
+      n_batches = int(np.ceil(float(input_size)/float(batch_size)))
+      acc = None 
+      for i in range(n_batches):
+        curr_batch = input_mat_centered[i*batch_size:(i+1)*batch_size, :]
+        curr_cov = np.dot(curr_batch.T, curr_batch) 
+        if acc is None: acc = curr_cov
+        else: acc = acc + curr_cov
+      acc = acc / (input_size-1)
+      return acc
+
     def compute_fid_and_inception_score(self, network_input, batch_size=100, verbose=True):
       network_input_min, network_input_max = np.min(network_input), np.max(network_input)
       assert(type(network_input) == np.ndarray)
@@ -255,8 +269,8 @@ class InceptionScore():
       print("\nComputing activation statistics.")
       gc.collect()
       activation_mu = np.mean(activations, axis=0)
-      gc.collect()
-      activation_sigma = np.cov(activations, rowvar=False)
+      activation_sigma = self.batch_covariance(activations, activation_mu, batch_size=1000)
+      # activation_sigma = np.cov(activations, rowvar=False)
       gc.collect()
 
       print("Computing inception score.")
