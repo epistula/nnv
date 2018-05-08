@@ -32,7 +32,8 @@ list_of_files = [('Visualization/', '.png'),
 # experiment_folder = './EEEexperimentsLastMIX-PDWGANCannon2-CIFAR10/c8d9f2e6f41f452d88e2268f2e3dc69a/'
 # experiment_folder = './EEEexperimentsLastMIX-PDWGANCannon2-CIFAR10/a8455ec856274c7aa3cd4116a5dcdb94/'
 # experiment_folder = './EEEexperimentsLastMIX-PDWGANCannon2-CIFAR10/43905b65ee8a4a269bf4554d7f957b67/'
-experiment_folder = './EEEexperimentsLastMIX-PDWGANCannon2-CIFAR10/87c75aa807444307813db5de5184d7ed/'
+# experiment_folder = './EEEexperimentsLastMIX-PDWGANCannon2-CIFAR10/87c75aa807444307813db5de5184d7ed/'
+experiment_folder = './EEEexperimentsLastMIX-PDWGANCannon2-CIFAR10/a0d5a891c0464bdea3be8abc6c84c3bb/'
 
 main_folder = '~/tensorflowCode/'+experiment_folder
 mac_loc_str = '/Users/MeVlana/CloudExperiments/'
