@@ -81,7 +81,7 @@ global_experiment_name = 'EEEexperimentsLastMIX-'+Algorithm+'-'
 parser = argparse.ArgumentParser(description='Tensorflow Gan Models')
 parser.add_argument('--exp_dir_postfix', type=str, default='', help='Directory to put the experiment postfix.')
 parser.add_argument('--save_checkpoints', type=bool, default=True, help='store the checkpoints?')
-parser.add_argument('--restore_dir', type=str, default='/16623e0803a342df8172c542e8279748/checkpoint/', help='Directory of restore experiment.')
+parser.add_argument('--restore_dir', type=str, default='/164e400217cb483a8c4cc1af0e0c0c3a/checkpoint/', help='Directory of restore experiment.')
 parser.add_argument('--restore', type=bool, default=True, help='Restore model.')
 parser.add_argument('--gpu', type=str, default='0', help='gpu to use.')
 parser.add_argument('--epochs', type=int, default=1000000000, help='Number of epochs to train.')
