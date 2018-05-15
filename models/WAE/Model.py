@@ -10,6 +10,7 @@ import argparse
 import copy
 
 import models.WGANGP.ModelMapsDCGAN3 as ModelMaps
+# import models.PDWGANCannon.ModelMapsDCGAN3 as ModelMaps
 
 import distributions 
 import helper
@@ -175,8 +176,13 @@ class Model():
         try: self.gen_batch_size_tf = tf.shape(self.input_sample['flat'])[0]
         except: self.gen_batch_size_tf = tf.shape(self.input_sample['image'])[0]
         
-        self.gen_prior_param = self.PriorMap.forward((tf.zeros(shape=(self.gen_batch_size_tf, 1)),))
-        self.gen_prior_dist = distributions.DiagonalGaussianDistribution(params = self.gen_prior_param)
+        # self.gen_prior_param = self.PriorMap.forward((tf.zeros(shape=(self.gen_batch_size_tf, 1)),))
+        # self.gen_prior_dist = distributions.DiagonalGaussianDistribution(params = self.gen_prior_param)
+        self.gen_prior_param_low = -3*tf.ones(shape=(self.batch_size_tf, self.config['n_latent']))
+        self.gen_prior_param_high = 3*tf.ones(shape=(self.batch_size_tf, self.config['n_latent']))
+        self.gen_prior_param= tf.concat([self.gen_prior_param_low, self.gen_prior_param_high], axis = 1)
+        self.gen_prior_dist = distributions.UniformDistribution(params = self.gen_prior_param)
+
         self.gen_prior_latent_code = self.gen_prior_dist.sample()
         self.gen_neg_ent_prior = self.prior_dist.log_pdf(self.gen_prior_latent_code)
         self.gen_mean_neg_ent_prior = tf.reduce_mean(self.gen_neg_ent_prior)
@@ -207,8 +213,12 @@ class Model():
         #############################################################################
         # GENERATOR 
 
-        self.prior_param = self.PriorMap.forward((tf.zeros(shape=(self.batch_size_tf, 1)),))
-        self.prior_dist = distributions.DiagonalGaussianDistribution(params = self.prior_param)
+        # self.prior_param = self.PriorMap.forward((tf.zeros(shape=(self.batch_size_tf, 1)),))
+        # self.prior_dist = distributions.DiagonalGaussianDistribution(params = self.prior_param)
+        self.prior_param_low = -3*tf.ones(shape=(self.batch_size_tf, self.config['n_latent']))
+        self.prior_param_high = 3*tf.ones(shape=(self.batch_size_tf, self.config['n_latent']))
+        self.prior_param = tf.concat([self.prior_param_low, self.prior_param_high], axis = 1)
+        self.prior_dist = distributions.UniformDistribution(params = self.prior_param)
         self.prior_latent_code = self.prior_dist.sample()
         self.neg_ent_prior = self.prior_dist.log_pdf(self.prior_latent_code)
         self.mean_neg_ent_prior = tf.reduce_mean(self.neg_ent_prior)
@@ -231,7 +241,26 @@ class Model():
         self.constant_obs_sample_param = self.Generator.forward(self.constant_prior_latent_code_expanded)
         self.constant_obs_sample_dist = distributions.ProductDistribution(sample_properties = batch['observed']['properties'], params = self.constant_obs_sample_param)
         self.constant_obs_sample = self.constant_obs_sample_dist.sample(b_mode=True)
+                
+        if self.config['n_latent'] == 2: 
+            # if os.path.exists('./fixed_samples/np_constant_prior_grid_sample_'+str(self.prior_latent_code.get_shape().as_list()[-1])+'.npz'): 
+            #     np_constant_prior_grid_sample = np.load('./np_constant_prior_grid_sample_'+str(self.prior_latent_code.get_shape().as_list()[-1])+'.npz')
+            # else:
+            grid_scale = 3
+            x = np.linspace(-grid_scale, grid_scale, 20)
+            y = np.linspace(grid_scale, -grid_scale, 20)
+            xv, yv = np.meshgrid(x, y)
+            np_constant_prior_grid_sample = np.concatenate((xv.flatten()[:, np.newaxis], yv.flatten()[:, np.newaxis][:]), axis=1)
+            np.save('./fixed_samples/np_constant_prior_grid_sample_'+str(self.prior_latent_code.get_shape().as_list()[-1])+'.npz', np_constant_prior_grid_sample)    
         
+            self.constant_prior_grid_latent_code = tf.constant(np.asarray(np_constant_prior_grid_sample), dtype=np.float32)
+            self.constant_prior_grid_latent_code_expanded = tf.reshape(self.constant_prior_grid_latent_code, [-1, 1, *self.constant_prior_grid_latent_code.get_shape().as_list()[1:]])
+
+            self.constant_obs_grid_sample_param = self.Generator.forward(self.constant_prior_grid_latent_code_expanded)
+            self.constant_obs_grid_sample_dist = distributions.ProductDistribution(sample_properties = batch['observed']['properties'], params = self.constant_obs_grid_sample_param)
+            self.constant_obs_grid_sample = self.constant_obs_grid_sample_dist.sample(b_mode=True)
+                
+
         #############################################################################
         # ENCODER 
 
