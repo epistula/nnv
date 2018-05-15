@@ -11,8 +11,11 @@ def run(cmd):
 # zone = 'us-central1-c'
 
 # cirra_loc_str = 'instance1-east1d-1gpu2cpu12mem50hd-hour0-402-month293-12'
-cirra_loc_str = 'instance1-east1d-1gpu1cpu6mem50hd-hour0-361-month263-67'
+# cirra_loc_str = 'instance1-east1d-1gpu1cpu6mem50hd-hour0-361-month263-67'
+cirra_loc_str = 'instance-east1d-8cpu15mem30hd-hour0-234-month170-89'
 zone = 'us-east1-d'
+
+
 
 list_of_files = [('Visualization/', '.png'),
 				 ('', '.txt'),
@@ -38,7 +41,10 @@ list_of_files = [('Visualization/', '.png'),
 
 # experiment_folder = './EEEexperimentsLastMIX-PDWGANCannon2-CIFAR10/431df31f91944565b6b7698a971f7577/'
 # experiment_folder = './EEEexperimentsLastMIX-PDWGANCannon2-CIFAR10/16623e0803a342df8172c542e8279748/'
-experiment_folder = './EEEexperimentsLastMIX-PDWGANCannon2-CIFAR10/164e400217cb483a8c4cc1af0e0c0c3a/'
+# experiment_folder = './EEEexperimentsLastMIX-PDWGANCannon2-CIFAR10/164e400217cb483a8c4cc1af0e0c0c3a/'
+# experiment_folder = './EEEexperimentsLastMIX-PDWGANCannon2-CIFAR10/98ee5405af7a4f64ab2570dc128e9237/'
+
+experiment_folder = './EEEexperimentsStable-WAEVanilla-INTENSITY/3b737d1f6c7548e19f9044c7d27a8337/'
 
 main_folder = '~/tensorflowCode/'+experiment_folder
 mac_loc_str = '/Users/MeVlana/CloudExperiments/'
