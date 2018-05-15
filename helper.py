@@ -618,7 +618,11 @@ def dataset_plotter(data_list, ranges=None, tie=False, point_thickness=0.5, colo
 		plt.axes().set_aspect('equal')
 
 	ax = plt.gca()
-	ax.set_axis_bgcolor((1., 1., 1.))
+	try:
+		ax.set_axis_bgcolor((1., 1., 1.))
+	except:
+		ax.set_facecolor((1., 1., 1.))
+
 	ax.spines['bottom'].set_color('black')
 	ax.spines['top'].set_color('black')
 	ax.spines['right'].set_color('black')
