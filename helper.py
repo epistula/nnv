@@ -34,6 +34,8 @@ import string
 import pdb
 import copy
 
+plt.rcParams['axes.linewidth'] = 2
+
 # from tensorflow.python.tools.inspect_checkpoint import print_tensors_in_checkpoint_file
 # print_tensors_in_checkpoint_file(file_name=global_args.global_exp_dir+global_args.restore_dir+'/checkpoints/checkpoint', tensor_name='',all_tensors='')
 
@@ -521,7 +523,9 @@ def dataset_plotter_old(data_list, save_dir = './', postfix = '', postfix2 = Non
 
 def dataset_plotter(data_list, ranges=None, tie=False, point_thickness=0.5, colors=None, save_dir = './', postfix = '', postfix2 = None, show_also = False):
 	if colors is None: colors = ['r', 'g', 'b', 'k', 'c', 'm', 'gold', 'teal', 'springgreen', 'lightcoral', 'darkgray']
-	alphas = [1, 0.3, 0.3, 1.]
+	# alphas = [1, 0.3, 0.3, 1.]
+	# alphas = [1, 0.6, 0.4, 1.]
+	alphas = [0.3, 1, 1, 1.]
 
 	# if data_list[0].shape[1]==3:
 	# 	fig = plt.figure()
@@ -609,17 +613,21 @@ def dataset_plotter(data_list, ranges=None, tie=False, point_thickness=0.5, colo
 				# pdb.set_trace()
 				plt.plot(x1, y1, 'k')
 
-
-		# if tie: pdb.set_trace()
-
 		ax.set_xlim([xmin, xmax])
 		ax.set_ylim([ymin, ymax])
 		plt.axes().set_aspect('equal')
 
+	ax = plt.gca()
+	ax.set_axis_bgcolor((1., 1., 1.))
+	ax.spines['bottom'].set_color('black')
+	ax.spines['top'].set_color('black')
+	ax.spines['right'].set_color('black')
+	ax.spines['left'].set_color('black')
+
 	if not os.path.exists(save_dir): os.makedirs(save_dir)
-	plt.savefig(save_dir+'datasets_'+postfix+'.png')
-	if postfix2 is None: plt.savefig(save_dir+'/../datasets.png')
-	else: plt.savefig(save_dir+'/../datasets_'+postfix2+'.png')
+	plt.savefig(save_dir+'datasets_'+postfix+'.png', bbox_inches='tight')
+	if postfix2 is None: plt.savefig(save_dir+'/../datasets.png', bbox_inches='tight')
+	else: plt.savefig(save_dir+'/../datasets_'+postfix2+'.png', bbox_inches='tight')
 
 	if show_also: plt.show()
 	else: plt.close('all')

@@ -9,6 +9,8 @@ printf 'y' | conda create -n tensorflow python=3.6
 source activate tensorflow
 printf '\nsource activate tensorflow' >> ~/.bashrc
 pip install numpy matplotlib scikit-learn scipy seaborn PyQt5 pillow # for seaborn
+printf 'y' | pip install numba
+pip install umap-learn
 pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.2.1-cp36-cp36m-linux_x86_64.whl
 
 source deactivate
@@ -17,6 +19,8 @@ source activate tensorflowSource
 printf '\nsource activate tensorflowSource' >> ~/.bashrc
 
 pip install six numpy wheel matplotlib scikit-learn scipy seaborn PyQt5 pillow # for seaborn
+printf 'y' | pip install numba
+pip install umap-learn
 
 curl https://bazel.build/bazel-release.pub.gpg | sudo apt-key add -
 sudo apt-get update

@@ -12,19 +12,21 @@ import argparse
 import helper
 from sklearn.manifold import TSNE
 from umap import UMAP
+import tensorflow as tf
 
 
 # dataset_to_use = 'IMAGENET'
 # dataset_to_use = 'BEDROOM'
 # dataset_to_use = 'CELEB'
-dataset_to_use = 'CIFAR10'
+# dataset_to_use = 'CIFAR10'
 # dataset_to_use = 'MNIST'
 # dataset_to_use = 'CAT'
 # dataset_to_use = 'FLOWERS'
 # dataset_to_use = 'CUB'
 # dataset_to_use = 'TOY'
+dataset_to_use = 'INTENSITY'
 
-Algorithm = 'PDWGANCannon2'
+Algorithm = 'WAEVanilla'
 if Algorithm == 'WAE':
     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0.5, 'beta2': 0.9,  
                              'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 1, 'n_filter': 128, 
@@ -33,10 +35,11 @@ if Algorithm == 'WAE':
                              'enc_reg_strength': 10, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 
                              'critic_reg_mode': [], 'cri_reg_strength': 0, 'lambda_mix': 0.25}
 elif Algorithm == 'WAEVanilla':
-    alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0.5, 'beta2': 0.999,  
-                             'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 1, 'n_filter': 128, 
-                             'encoder_mode': 'UnivApprox', 'divergence_mode': 'NS-GAN', 'dual_dist_mode': '', 
-                             'enc_normalization_mode': 'Layer Norm', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'Layer Norm', 
+    alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0.5, 'beta2': 0.9,  
+                             'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 1, 'n_filter': 20, 
+                             'encoder_mode': 'Deterministic', 'divergence_mode': 'MMD', 'dual_dist_mode': '', 
+                             # 'enc_normalization_mode': 'None', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'None', 
+                             'enc_normalization_mode': 'None', 'gen_normalization_mode': 'None', 'cri_normalization_mode': 'None', 
                              'enc_reg_strength': 10, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 
                              'critic_reg_mode': [], 'cri_reg_strength': 0, 'lambda_mix': 0.25}
 elif Algorithm == 'WGANGP':
@@ -76,13 +79,13 @@ elif Algorithm == 'PDWGANCannon2':
                              'critic_reg_mode': ['Coupling Gradient Vector',], 'cri_reg_strength': 1, 'lambda_mix': 0.5}
 
 
-global_experiment_name = 'EEEexperimentsLastMIX-'+Algorithm+'-'
+global_experiment_name = 'EEEexperimentsStable-'+Algorithm+'-'
 
 parser = argparse.ArgumentParser(description='Tensorflow Gan Models')
 parser.add_argument('--exp_dir_postfix', type=str, default='', help='Directory to put the experiment postfix.')
-parser.add_argument('--save_checkpoints', type=bool, default=True, help='store the checkpoints?')
+parser.add_argument('--save_checkpoints', type=bool, default=False, help='store the checkpoints?')
 parser.add_argument('--restore_dir', type=str, default='/164e400217cb483a8c4cc1af0e0c0c3a/checkpoint/', help='Directory of restore experiment.')
-parser.add_argument('--restore', type=bool, default=True, help='Restore model.')
+parser.add_argument('--restore', type=bool, default=False, help='Restore model.')
 parser.add_argument('--gpu', type=str, default='0', help='gpu to use.')
 parser.add_argument('--epochs', type=int, default=1000000000, help='Number of epochs to train.')
 parser.add_argument('--batch_size', type=int, default=50, help='Input batch size for training.')
@@ -547,6 +550,64 @@ elif dataset_to_use == 'MNIST':
     from datasetLoaders.ColorMnistLoader import DataLoader
     #############################################################################################################################
 
+elif dataset_to_use == 'INTENSITY':
+    parser.add_argument('--global_exp_dir', type=str, default='./'+global_experiment_name+'MNIST', help='Directory to put the experiments.')
+
+    parser.add_argument('--gradient_clipping', type=float, default=0, help='Initial weight decay.')
+    parser.add_argument('--optimizer_class', type=str, default=alg_specific_settings['optimizer_class'], help='Optimizer type.')
+    parser.add_argument('--learning_rate', type=float, default=alg_specific_settings['learning_rate'], help='Initial learning rate.')
+    parser.add_argument('--beta1', type=float, default=alg_specific_settings['beta1'], help='Momentum Beta 1.')
+    parser.add_argument('--beta2', type=float, default=alg_specific_settings['beta2'], help='Momentum Beta 2.')
+    parser.add_argument('--rel_enc_skip_rate', type=float, default=alg_specific_settings['rel_enc_skip_rate'], help='Relative encoder skip steps.')
+    parser.add_argument('--rel_cri_skip_rate', type=float, default=alg_specific_settings['rel_cri_skip_rate'], help='Relative critic skip steps.')
+    parser.add_argument('--rel_gen_skip_rate', type=float, default=alg_specific_settings['rel_gen_skip_rate'], help='Relative generator skip steps.')
+
+    parser.add_argument('--log_interval', type=int, default=5, help='how many batches to wait before logging training status')
+    parser.add_argument('--vis_interval', type=int, default=1, help='how many batches to wait before visualizing training status')
+    parser.add_argument('--in_between_vis', type=int, default=0, help='how many reports to wait before visualizing training status')
+    parser.add_argument('--test_epoch_rate', type=list, default=[3000,1], help='test epoch repeat')
+    parser.add_argument('--latent_vis_TSNE_epoch_rate', type=list, default=[10,5], help='latent epoch repeat')
+    parser.add_argument('--latent_vis_UMAP_epoch_rate', type=list, default=[10,5], help='latent epoch repeat')
+    parser.add_argument('--reconst_vis_epoch_rate', type=list, default=[10,5], help='reconst epoch repeat')
+    parser.add_argument('--interpolate_vis_epoch_rate', type=list, default=[10,5], help='interpolation epoch repeat')
+    parser.add_argument('--fixed_samples_vis_epoch_rate', type=list, default=[10,5], help='fixed samples epoch repeat')
+    parser.add_argument('--fid_inception_score_epoch_rate', type=list, default=[0,1], help='compute fid and inception score')
+    parser.add_argument('--pigeonhole_score_epoch_rate', type=list, default=[0,1], help='compute pigeonhole score')
+
+    parser.add_argument('--n_context', type=int, default=1, help='n_context.')
+    parser.add_argument('--n_state', type=int, default=1, help='n_state.')
+    parser.add_argument('--n_latent', type=int, default=2, help='n_latent.')
+    # parser.add_argument('--n_latent', type=int, default=64, help='n_latent.')
+    parser.add_argument('--n_filter', type=int, default=alg_specific_settings['n_filter'], help='n_filter.')
+    parser.add_argument('--n_flat', type=int, default=200, help='n_flat.')
+    
+    parser.add_argument('--div_activation_function', type=object, default=helper.lrelu, help='activation function for Diverger.')
+    parser.add_argument('--enc_activation_function', type=object, default=helper.lrelu, help='activation function for Encoder.')
+    parser.add_argument('--gen_activation_function', type=object, default=helper.lrelu, help='activation function for Generator.')
+    parser.add_argument('--cri_activation_function', type=object, default=helper.lrelu, help='activation function for Critic.')
+    parser.add_argument('--div_normalization_mode', type=str, default='None', help='normalization mode for Diverger.')
+    parser.add_argument('--enc_normalization_mode', type=str, default=alg_specific_settings['enc_normalization_mode'], help='normalization mode for Encoder.')
+    parser.add_argument('--gen_normalization_mode', type=str, default=alg_specific_settings['gen_normalization_mode'], help='normalization mode for Generator.')
+    parser.add_argument('--cri_normalization_mode', type=str, default=alg_specific_settings['cri_normalization_mode'], help='normalization mode for Critic.')
+    
+    parser.add_argument('--sample_distance_mode', type=str, default='Euclidean', help='sample distance mode.')
+    parser.add_argument('--kernel_mode', type=str, default='InvMultiquadratics', help='kernel mode.')
+    parser.add_argument('--encoder_mode', type=str, default=alg_specific_settings['encoder_mode'], help='encoder mode.')
+    parser.add_argument('--divergence_mode', type=str, default=alg_specific_settings['divergence_mode'], help='divergence mode.')
+    parser.add_argument('--dual_dist_mode', type=str, default=alg_specific_settings['dual_dist_mode'], help='dual distribution mode.')
+    parser.add_argument('--lambda_mix', type=str, default=alg_specific_settings['lambda_mix'], help='mixture amount for coupling.')
+    parser.add_argument('--critic_reg_mode', type=list, default=alg_specific_settings['critic_reg_mode'], help='critic regularizer mode.')
+    parser.add_argument('--enc_reg_strength', type=float, default=alg_specific_settings['enc_reg_strength'], help='encoder regularization strength')
+    parser.add_argument('--enc_inv_MMD_n_trans', type=float, default=alg_specific_settings['enc_inv_MMD_n_trans'], help='encoder invariant MMD num of transforms')
+    parser.add_argument('--enc_inv_MMD_strength', type=float, default=alg_specific_settings['enc_inv_MMD_strength'], help='encoder invariant MMD strength')
+    parser.add_argument('--cri_reg_strength', type=float, default=alg_specific_settings['cri_reg_strength'], help='cririminator regularization strength')
+    parser.add_argument('--enc_sine_freq', type=float, default=2, help='encoder sine frequency')
+
+    global_args = parser.parse_args()
+    global_args.curr_epoch = 1
+    from datasetLoaders.IntensityToyDataLoader import DataLoader
+    #############################################################################################################################
+
 elif dataset_to_use == 'TOY':
     parser.add_argument('--global_exp_dir', type=str, default='./'+global_experiment_name+'TOY', help='Directory to put the experiments.')
 
@@ -970,6 +1031,7 @@ with tf.Graph().as_default():
         all_np_reconst_sample = None
         all_np_interpolate_sample = None
         all_np_fixed_sample = None
+        all_np_fixed_grid_sample = None
         all_labels_np = None
 
         print('\n*************************************   VISUALIZATION STAGE: '+mode+'   *************************************\n')
@@ -1009,6 +1071,11 @@ with tf.Graph().as_default():
                     np_constant_obs_sample = sess.run(model.constant_obs_sample['image'], feed_dict = curr_feed_dict)
                     if all_np_fixed_sample is None: all_np_fixed_sample = np_constant_obs_sample
                     else: all_np_fixed_sample = np.concatenate([all_np_fixed_sample, np_constant_obs_sample], axis=0)
+
+                if global_args.n_latent == 2 and (all_np_fixed_grid_sample is None or all_np_fixed_grid_sample.shape[0]<400):
+                    np_constant_obs_grid_sample = sess.run(model.constant_obs_grid_sample['image'], feed_dict = curr_feed_dict)
+                    if all_np_fixed_grid_sample is None: all_np_fixed_grid_sample = np_constant_obs_grid_sample
+                    else: all_np_fixed_grid_sample = np.concatenate([all_np_fixed_grid_sample, np_constant_obs_grid_sample], axis=0)
 
             if batch['context']['data']['flat'] is not None:
               if all_labels_np is None: all_labels_np = batch['context']['data']['flat'][:,0,:]
@@ -1082,6 +1149,12 @@ with tf.Graph().as_default():
             helper.visualize_images2(all_np_fixed_sample[:int(np.sqrt(all_np_fixed_sample.shape[0]))**2, ...], 
             block_size=[int(np.sqrt(all_np_fixed_sample.shape[0])), int(np.sqrt(all_np_fixed_sample.shape[0]))], 
             save_dir=global_args.exp_dir+'Visualization/'+mode+'_fixed_sample/', postfix = '_'+mode+'_fixed_sample_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_fixed_sample'+'_m')
+
+            if global_args.n_latent == 2:
+                if b_zero_one_range: np.clip(all_np_fixed_grid_sample, 0, 1, out=all_np_fixed_grid_sample) 
+                helper.visualize_images2(all_np_fixed_grid_sample[:int(np.sqrt(all_np_fixed_grid_sample.shape[0]))**2, ...], 
+                block_size=[int(np.sqrt(all_np_fixed_grid_sample.shape[0])), int(np.sqrt(all_np_fixed_grid_sample.shape[0]))], 
+                save_dir=global_args.exp_dir+'Visualization/'+mode+'_fixed_sample/', postfix = '_'+mode+'_fixed_grid_sample_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_fixed_grid_sample'+'_m')
             
             end = time.time()
             print('Visualized fixed samples: Time: {:.3f}'.format((end - start)))
@@ -1107,63 +1180,69 @@ with tf.Graph().as_default():
                 print('Visualizing latents - TSNE.')
                 start = time.time();
 
-                all_tsne_scrambled = TSNE().fit_transform(all_input[chosen_indeces2, :])
-                all_tsne = all_tsne_scrambled[inverse_chosen_indeces2, :]
-
-                all_tsne_centered = all_tsne-np.mean(all_tsne, axis=0)[np.newaxis, :]
-                all_tsne_normalized = all_tsne_centered/(np.std(all_tsne_centered, axis=0)[np.newaxis, :]+1e-7)
-                tsne_normalized_posterior = all_tsne_normalized[:all_np_posterior_latent_code.shape[0],:]
-                tsne_normalized_prior = all_tsne_normalized[all_np_posterior_latent_code.shape[0]:,:]
-
-                tsne_class_wise_posterior = []
-                tsne_class_wise_sizes = []
-                if all_labels_np is None:
-                  tsne_class_wise_posterior.append(tsne_normalized_posterior)
+                if global_args.n_latent == 2:
+                    helper.dataset_plotter([all_np_posterior_latent_code,], colors=['g',], point_thickness = 10, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_posterior/', postfix = '_'+mode+'_TSNE_posterior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_posterior'+'_m')
+                    helper.dataset_plotter([all_np_prior_latent_code,], colors=['r',], point_thickness = 10, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_prior/', postfix = '_'+mode+'_TSNE_prior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_prior'+'_m')
+                    helper.dataset_plotter([all_np_prior_latent_code, all_np_posterior_latent_code], point_thickness = 10, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_prior_posterior/', postfix = '_'+mode+'_TSNE_prior_posterior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_prior_posterior'+'_m')
                 else:
-                  for c in range(all_labels_np.shape[1]):
-                    tsne_curr_class_posterior = tsne_normalized_posterior[all_labels_np[:,c].astype(bool),:]
-                    tsne_class_wise_sizes.append(tsne_curr_class_posterior.shape[0])
-                    tsne_class_wise_posterior.append(tsne_curr_class_posterior)
-                  for i in range(len(tsne_class_wise_posterior)):
-                    tsne_class_wise_posterior[i] = tsne_class_wise_posterior[i][:min(tsne_class_wise_sizes),:]
+                    all_tsne_scrambled = TSNE().fit_transform(all_input[chosen_indeces2, :])
+                    all_tsne = all_tsne_scrambled[inverse_chosen_indeces2, :]
 
-                helper.dataset_plotter(tsne_class_wise_posterior, point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_posterior_classwise/', postfix = '_'+mode+'_TSNE_posterior_classwise_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_posterior_classwise'+'_m')
-                helper.dataset_plotter([tsne_normalized_posterior,], colors=['r',], point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_posterior/', postfix = '_'+mode+'_TSNE_posterior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_posterior'+'_m')
-                helper.dataset_plotter([tsne_normalized_prior,], colors=['g',], point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_prior/', postfix = '_'+mode+'_TSNE_prior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_prior'+'_m')
-                helper.dataset_plotter([tsne_normalized_posterior, tsne_normalized_prior], point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_prior_posterior/', postfix = '_'+mode+'_TSNE_prior_posterior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_prior_posterior'+'_m')
-                
-                end = time.time()
-                print('Visualized latents - TSNE: Time: {:.3f}\n'.format((end - start)))
+                    all_tsne_centered = all_tsne-np.mean(all_tsne, axis=0)[np.newaxis, :]
+                    all_tsne_normalized = all_tsne_centered/(np.std(all_tsne_centered, axis=0)[np.newaxis, :]+1e-7)
+                    tsne_normalized_posterior = all_tsne_normalized[:all_np_posterior_latent_code.shape[0],:]
+                    tsne_normalized_prior = all_tsne_normalized[all_np_posterior_latent_code.shape[0]:,:]
+
+                    tsne_class_wise_posterior = []
+                    tsne_class_wise_sizes = []
+                    if all_labels_np is None:
+                      tsne_class_wise_posterior.append(tsne_normalized_posterior)
+                    else:
+                      for c in range(all_labels_np.shape[1]):
+                        tsne_curr_class_posterior = tsne_normalized_posterior[all_labels_np[:,c].astype(bool),:]
+                        tsne_class_wise_sizes.append(tsne_curr_class_posterior.shape[0])
+                        tsne_class_wise_posterior.append(tsne_curr_class_posterior)
+                      for i in range(len(tsne_class_wise_posterior)):
+                        tsne_class_wise_posterior[i] = tsne_class_wise_posterior[i][:min(tsne_class_wise_sizes),:]
+
+                    helper.dataset_plotter(tsne_class_wise_posterior, point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_posterior_classwise/', postfix = '_'+mode+'_TSNE_posterior_classwise_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_posterior_classwise'+'_m')
+                    helper.dataset_plotter([tsne_normalized_posterior,], colors=['r',], point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_posterior/', postfix = '_'+mode+'_TSNE_posterior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_posterior'+'_m')
+                    helper.dataset_plotter([tsne_normalized_prior,], colors=['g',], point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_prior/', postfix = '_'+mode+'_TSNE_prior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_prior'+'_m')
+                    helper.dataset_plotter([tsne_normalized_posterior, tsne_normalized_prior], point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_prior_posterior/', postfix = '_'+mode+'_TSNE_prior_posterior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_prior_posterior'+'_m')
+                    
+                    end = time.time()
+                    print('Visualized latents - TSNE: Time: {:.3f}\n'.format((end - start)))
 
             if (global_args.latent_vis_UMAP_epoch_rate[0]>0 and global_args.curr_epoch % global_args.latent_vis_UMAP_epoch_rate[0] == global_args.latent_vis_UMAP_epoch_rate[1]):
                 print('Visualizing latents - UMAP.')
                 start = time.time();
 
-                all_umap_scrambled = UMAP().fit_transform(all_input[chosen_indeces2, :])
-                all_umap = all_umap_scrambled[inverse_chosen_indeces2, :]
+                if not global_args.n_latent == 2:
+                    all_umap_scrambled = UMAP().fit_transform(all_input[chosen_indeces2, :])
+                    all_umap = all_umap_scrambled[inverse_chosen_indeces2, :]
 
-                all_umap_centered = all_umap-np.mean(all_umap, axis=0)[np.newaxis, :]
-                all_umap_normalized = all_umap_centered/(np.std(all_umap_centered, axis=0)[np.newaxis, :]+1e-7)
-                umap_normalized_posterior = all_umap_normalized[:all_np_posterior_latent_code.shape[0],:]
-                umap_normalized_prior = all_umap_normalized[all_np_posterior_latent_code.shape[0]:,:]
+                    all_umap_centered = all_umap-np.mean(all_umap, axis=0)[np.newaxis, :]
+                    all_umap_normalized = all_umap_centered/(np.std(all_umap_centered, axis=0)[np.newaxis, :]+1e-7)
+                    umap_normalized_posterior = all_umap_normalized[:all_np_posterior_latent_code.shape[0],:]
+                    umap_normalized_prior = all_umap_normalized[all_np_posterior_latent_code.shape[0]:,:]
 
-                umap_class_wise_posterior = []
-                umap_class_wise_sizes = []
-                if all_labels_np is None:
-                  umap_class_wise_posterior.append(umap_normalized_posterior)
-                else:
-                  for c in range(all_labels_np.shape[1]):
-                    umap_curr_class_posterior = umap_normalized_posterior[all_labels_np[:,c].astype(bool),:]
-                    umap_class_wise_sizes.append(umap_curr_class_posterior.shape[0])
-                    umap_class_wise_posterior.append(umap_curr_class_posterior)
-                  for i in range(len(umap_class_wise_posterior)):
-                    umap_class_wise_posterior[i] = umap_class_wise_posterior[i][:min(umap_class_wise_sizes),:]
+                    umap_class_wise_posterior = []
+                    umap_class_wise_sizes = []
+                    if all_labels_np is None:
+                      umap_class_wise_posterior.append(umap_normalized_posterior)
+                    else:
+                      for c in range(all_labels_np.shape[1]):
+                        umap_curr_class_posterior = umap_normalized_posterior[all_labels_np[:,c].astype(bool),:]
+                        umap_class_wise_sizes.append(umap_curr_class_posterior.shape[0])
+                        umap_class_wise_posterior.append(umap_curr_class_posterior)
+                      for i in range(len(umap_class_wise_posterior)):
+                        umap_class_wise_posterior[i] = umap_class_wise_posterior[i][:min(umap_class_wise_sizes),:]
 
-                helper.dataset_plotter(umap_class_wise_posterior, point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_UMAP_posterior_classwise/', postfix = '_'+mode+'_UMAP_posterior_classwise_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_UMAP_posterior_classwise'+'_m')
-                helper.dataset_plotter([umap_normalized_posterior,], colors=['r',], point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_UMAP_posterior/', postfix = '_'+mode+'_UMAP_posterior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_UMAP_posterior'+'_m')
-                helper.dataset_plotter([umap_normalized_prior,], colors=['g',], point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_UMAP_prior/', postfix = '_'+mode+'_UMAP_prior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_UMAP_prior'+'_m')
-                helper.dataset_plotter([umap_normalized_posterior, umap_normalized_prior], point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_UMAP_prior_posterior/', postfix = '_'+mode+'_UMAP_prior_posterior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_UMAP_prior_posterior'+'_m')
-                
+                    helper.dataset_plotter(umap_class_wise_posterior, point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_UMAP_posterior_classwise/', postfix = '_'+mode+'_UMAP_posterior_classwise_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_UMAP_posterior_classwise'+'_m')
+                    helper.dataset_plotter([umap_normalized_posterior,], colors=['r',], point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_UMAP_posterior/', postfix = '_'+mode+'_UMAP_posterior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_UMAP_posterior'+'_m')
+                    helper.dataset_plotter([umap_normalized_prior,], colors=['g',], point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_UMAP_prior/', postfix = '_'+mode+'_UMAP_prior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_UMAP_prior'+'_m')
+                    helper.dataset_plotter([umap_normalized_posterior, umap_normalized_prior], point_thickness = 4, save_dir = global_args.exp_dir+'Visualization/'+mode+'_UMAP_prior_posterior/', postfix = '_'+mode+'_UMAP_prior_posterior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_UMAP_prior_posterior'+'_m')
+                    
                 end = time.time()
                 print('Visualized latents - UMAP: Time: {:.3f}\n'.format((end - start)))
 
