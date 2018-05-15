@@ -110,7 +110,7 @@ class Encoder():
 					lay2_flat = tf.layers.dense(inputs = lay1_flat, units = self.config['n_flat'], activation = self.activation_function)
 					latent_image_flat = tf.layers.dense(inputs = lay2_flat, units = self.config['n_flat'], activation = None)
 					
-					# latent_image_flat = 3*tf.nn.tanh(latent_image_flat)
+					latent_image_flat = 3*tf.nn.tanh(latent_image_flat)
 
 					# lay1_image = tf.layers.conv2d(inputs=image_input, filters=self.config['n_filter'], kernel_size=[5, 5], strides=[2, 2], padding="valid", use_bias=True, activation=None)
 					# if self.normalization_mode == 'Layer Norm': 

@@ -44,7 +44,7 @@ list_of_files = [('Visualization/', '.png'),
 # experiment_folder = './EEEexperimentsLastMIX-PDWGANCannon2-CIFAR10/164e400217cb483a8c4cc1af0e0c0c3a/'
 # experiment_folder = './EEEexperimentsLastMIX-PDWGANCannon2-CIFAR10/98ee5405af7a4f64ab2570dc128e9237/'
 
-experiment_folder = './EEEexperimentsStable-WAEVanilla-INTENSITY/3b737d1f6c7548e19f9044c7d27a8337/'
+experiment_folder = './EEEexperimentsStable-WAEVanilla-INTENSITY/0156f7e3571449d384b8b465b581fbd5/'
 
 main_folder = '~/tensorflowCode/'+experiment_folder
 mac_loc_str = '/Users/MeVlana/CloudExperiments/'

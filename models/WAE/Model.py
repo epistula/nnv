@@ -176,13 +176,13 @@ class Model():
         try: self.gen_batch_size_tf = tf.shape(self.input_sample['flat'])[0]
         except: self.gen_batch_size_tf = tf.shape(self.input_sample['image'])[0]
         
-        self.gen_prior_param = self.PriorMap.forward((tf.zeros(shape=(self.gen_batch_size_tf, 1)),))
-        self.gen_prior_dist = distributions.DiagonalGaussianDistribution(params = self.gen_prior_param)
+        # self.gen_prior_param = self.PriorMap.forward((tf.zeros(shape=(self.gen_batch_size_tf, 1)),))
+        # self.gen_prior_dist = distributions.DiagonalGaussianDistribution(params = self.gen_prior_param)
         
-        # self.gen_prior_param_low = -3*tf.ones(shape=(self.batch_size_tf, self.config['n_latent']))
-        # self.gen_prior_param_high = 3*tf.ones(shape=(self.batch_size_tf, self.config['n_latent']))
-        # self.gen_prior_param= tf.concat([self.gen_prior_param_low, self.gen_prior_param_high], axis = 1)
-        # self.gen_prior_dist = distributions.UniformDistribution(params = self.gen_prior_param)
+        self.gen_prior_param_low = -3*tf.ones(shape=(self.batch_size_tf, self.config['n_latent']))
+        self.gen_prior_param_high = 3*tf.ones(shape=(self.batch_size_tf, self.config['n_latent']))
+        self.gen_prior_param= tf.concat([self.gen_prior_param_low, self.gen_prior_param_high], axis = 1)
+        self.gen_prior_dist = distributions.UniformDistribution(params = self.gen_prior_param)
 
         self.gen_prior_latent_code = self.gen_prior_dist.sample()
         self.gen_neg_ent_prior = self.prior_dist.log_pdf(self.gen_prior_latent_code)
@@ -214,13 +214,13 @@ class Model():
         #############################################################################
         # GENERATOR 
 
-        self.prior_param = self.PriorMap.forward((tf.zeros(shape=(self.batch_size_tf, 1)),))
-        self.prior_dist = distributions.DiagonalGaussianDistribution(params = self.prior_param)
+        # self.prior_param = self.PriorMap.forward((tf.zeros(shape=(self.batch_size_tf, 1)),))
+        # self.prior_dist = distributions.DiagonalGaussianDistribution(params = self.prior_param)
 
-        # self.prior_param_low = -3*tf.ones(shape=(self.batch_size_tf, self.config['n_latent']))
-        # self.prior_param_high = 3*tf.ones(shape=(self.batch_size_tf, self.config['n_latent']))
-        # self.prior_param = tf.concat([self.prior_param_low, self.prior_param_high], axis = 1)
-        # self.prior_dist = distributions.UniformDistribution(params = self.prior_param)
+        self.prior_param_low = -3*tf.ones(shape=(self.batch_size_tf, self.config['n_latent']))
+        self.prior_param_high = 3*tf.ones(shape=(self.batch_size_tf, self.config['n_latent']))
+        self.prior_param = tf.concat([self.prior_param_low, self.prior_param_high], axis = 1)
+        self.prior_dist = distributions.UniformDistribution(params = self.prior_param)
 
         self.prior_latent_code = self.prior_dist.sample()
         self.neg_ent_prior = self.prior_dist.log_pdf(self.prior_latent_code)
