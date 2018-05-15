@@ -56,10 +56,19 @@ git clone https://github.com/tensorflow/tensorflow ~/tensorflowSource/tensorflow
 cd ~/tensorflowSource/tensorflow
 printf '\n\ny\nY\n\n\n\n\n\n\n\n\n\n' | ./configure
 bazel build -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.2 -k --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" //tensorflow/tools/pip_package:build_pip_package
-bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
-cd /tmp/tensorflow_pkg/
+
+# RUN THIS PART MULTIPLE TIMES SOMETIMES IT DOESNT WORK FIRST TIME
+pip install packaging
+pip install setuptools
+pip install --upgrade setuptools
+
+bazel-bin/tensorflow/tools/pip_package/build_pip_package /home/MeVlana/tensorflow_pkg
+cd /home/MeVlana/tensorflow_pkg
 pip install `ls | head -n 1`
 cd ~
+# RUN THIS PART MULTIPLE TIMES SOMETIMES IT DOESNT WORK FIRST TIME
+
+
 
 
 

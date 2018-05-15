@@ -84,7 +84,7 @@ global_experiment_name = 'EEEexperimentsStable-'+Algorithm+'-'
 parser = argparse.ArgumentParser(description='Tensorflow Gan Models')
 parser.add_argument('--exp_dir_postfix', type=str, default='', help='Directory to put the experiment postfix.')
 parser.add_argument('--save_checkpoints', type=bool, default=False, help='store the checkpoints?')
-parser.add_argument('--restore_dir', type=str, default='/164e400217cb483a8c4cc1af0e0c0c3a/checkpoint/', help='Directory of restore experiment.')
+parser.add_argument('--restore_dir', type=str, default='/15fc2c543c5c4d958a733f646d8e8abe/checkpoint/', help='Directory of restore experiment.')
 parser.add_argument('--restore', type=bool, default=False, help='Restore model.')
 parser.add_argument('--gpu', type=str, default='0', help='gpu to use.')
 parser.add_argument('--epochs', type=int, default=1000000000, help='Number of epochs to train.')
@@ -551,7 +551,7 @@ elif dataset_to_use == 'MNIST':
     #############################################################################################################################
 
 elif dataset_to_use == 'INTENSITY':
-    parser.add_argument('--global_exp_dir', type=str, default='./'+global_experiment_name+'MNIST', help='Directory to put the experiments.')
+    parser.add_argument('--global_exp_dir', type=str, default='./'+global_experiment_name+'INTENSITY', help='Directory to put the experiments.')
 
     parser.add_argument('--gradient_clipping', type=float, default=0, help='Initial weight decay.')
     parser.add_argument('--optimizer_class', type=str, default=alg_specific_settings['optimizer_class'], help='Optimizer type.')
