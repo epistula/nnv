@@ -9,8 +9,8 @@ import numpy as np
 import argparse
 import copy
 
-import models.WGANGP.ModelMapsDCGAN3 as ModelMaps
-# import models.WGANGP.ModelMapsDCGAN3INTENSITY as ModelMaps
+# import models.WGANGP.ModelMapsDCGAN3 as ModelMaps
+import models.WGANGP.ModelMapsDCGAN3INTENSITY as ModelMaps
 # import models.PDWGANCannon.ModelMapsDCGAN3 as ModelMaps
 
 import distributions 
