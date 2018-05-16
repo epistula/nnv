@@ -40,7 +40,7 @@ elif Algorithm == 'WAEVanilla':
                              'encoder_mode': 'UnivApprox', 'divergence_mode': 'INV-MMD2', 'dual_dist_mode': '', 
                              'enc_normalization_mode': 'None', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'None', 
                              # 'enc_normalization_mode': 'None', 'gen_normalization_mode': 'None', 'cri_normalization_mode': 'None', 
-                             'enc_reg_strength': 5, 'enc_inv_MMD_n_reflect': 30, 'enc_inv_MMD_n_trans': 1, 'enc_inv_MMD_strength': 20, 
+                             'enc_reg_strength': 5, 'enc_inv_MMD_n_reflect': 60, 'enc_inv_MMD_n_trans': 1, 'enc_inv_MMD_strength': 20, 
                              'critic_reg_mode': [], 'cri_reg_strength': 0, 'lambda_mix': 0.25}
 elif Algorithm == 'WGANGP':
     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0.5, 'beta2': 0.9,
