@@ -518,8 +518,8 @@ elif dataset_to_use == 'MNIST':
 
     parser.add_argument('--n_context', type=int, default=1, help='n_context.')
     parser.add_argument('--n_state', type=int, default=1, help='n_state.')
-    # parser.add_argument('--n_latent', type=int, default=16, help='n_latent.')
-    parser.add_argument('--n_latent', type=int, default=64, help='n_latent.')
+    parser.add_argument('--n_latent', type=int, default=16, help='n_latent.')
+    # parser.add_argument('--n_latent', type=int, default=64, help='n_latent.')
     parser.add_argument('--n_filter', type=int, default=alg_specific_settings['n_filter'], help='n_filter.')
     parser.add_argument('--n_flat', type=int, default=400, help='n_flat.')
     

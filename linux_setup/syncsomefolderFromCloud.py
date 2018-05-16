@@ -50,9 +50,13 @@ experiment_folders = [
 					# './EEEexperimentsStable-WAEVanilla-INTENSITY/0156f7e3571449d384b8b465b581fbd5/', #Gaussian
 					# './EEEexperimentsStable-WAEVanilla-INTENSITY/c762a8e29481410ca7ad09d859d94e5e/', #Uniform
 					# './EEEexperimentsStable-WAEVanilla-INTENSITY/b09ffa0646964cd79da8d126754c67d8/', #Uniform rand
-					'./EEEexperimentsStable-WAEVanilla-INTENSITY/a69246c6f5d541a7aaf2cda88119a641/', #Gaussian rand
-
+					# './EEEexperimentsStable-WAEVanilla-INTENSITY/a69246c6f5d541a7aaf2cda88119a641/', #Gaussian rand
 					 ]
+
+experiment_folders = [
+					   './EEEexperimentsStable-WAEVanilla-MNIST/eb4dcc5d20c244b189c7bf0735a26440/'
+					 ]
+					 
 for experiment_folder in experiment_folders:
 	main_folder = '~/tensorflowCode/'+experiment_folder
 	mac_loc_str = '/Users/MeVlana/CloudExperiments/'
