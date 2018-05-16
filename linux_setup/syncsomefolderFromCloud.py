@@ -57,9 +57,14 @@ experiment_folders = [
 					   # './EEEexperimentsStable-WAEVanilla-MNIST/eb4dcc5d20c244b189c7bf0735a26440/',
 					   # './EEEexperimentsStable-WAEVanilla-MNIST/8bcb9475a5414693bc810ee1b5b15105/',
 					   # './EEEexperimentsStable-WAEVanilla-CIFAR10/4550f229eff0418a90df5b080ef53614/',
-					   './EEEexperimentsStable-WAEVanilla-MNIST/b5251fc0c5d44584b9979bd95e271c8c/',
 					 ]
 					 
+experiment_folders = [
+					   './EEEexperimentsStable-WAEVanilla-MNIST/b5251fc0c5d44584b9979bd95e271c8c/',
+					   './EEEexperimentsStable-WAEVanilla-MNIST/43ebd13111474b12869310b1a22902b1/',
+					 ]
+					 
+
 for experiment_folder in experiment_folders:
 	main_folder = '~/tensorflowCode/'+experiment_folder
 	mac_loc_str = '/Users/MeVlana/CloudExperiments/'
