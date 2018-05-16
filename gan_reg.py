@@ -1184,6 +1184,14 @@ with tf.Graph().as_default():
                     helper.dataset_plotter([all_np_posterior_latent_code,], colors=['g',], point_thickness = 10, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_posterior/', postfix = '_'+mode+'_TSNE_posterior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_posterior'+'_m')
                     helper.dataset_plotter([all_np_prior_latent_code,], colors=['r',], point_thickness = 10, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_prior/', postfix = '_'+mode+'_TSNE_prior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_prior'+'_m')
                     helper.dataset_plotter([all_np_prior_latent_code, all_np_posterior_latent_code], point_thickness = 10, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_prior_posterior/', postfix = '_'+mode+'_TSNE_prior_posterior_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_prior_posterior'+'_m')
+
+                    rand_indices_TSNE = np.arange(all_np_posterior_latent_code.shape[0]).astype(np.int)
+                    np.random.permutation(rand_indices_TSNE)
+                    rand_indices_TSNE = rand_indices_TSNE[:global_args.batch_size].astype(np.int)
+                    pdb.set_trace()
+                    helper.dataset_plotter([all_np_posterior_latent_code[rand_indices_TSNE, ...],], colors=['g',], point_thickness = 10, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_posterior_batch/', postfix = '_'+mode+'_TSNE_posterior_batch_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_posterior_batch'+'_m')
+                    helper.dataset_plotter([all_np_prior_latent_code[rand_indices_TSNE, ...],], colors=['r',], point_thickness = 10, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_prior_batch/', postfix = '_'+mode+'_TSNE_prior_batch_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_prior_batch'+'_m')
+                    helper.dataset_plotter([all_np_prior_latent_code[rand_indices_TSNE, ...], all_np_posterior_latent_code[rand_indices_TSNE, ...]], point_thickness = 10, save_dir = global_args.exp_dir+'Visualization/'+mode+'_TSNE_prior_posterior_batch/', postfix = '_'+mode+'_TSNE_prior_posterior_batch_'+str(global_args.curr_epoch)+'_e', postfix2 = '_'+mode+'_TSNE_prior_posterior_batch'+'_m')
                 else:
                     all_tsne_scrambled = TSNE().fit_transform(all_input[chosen_indeces2, :])
                     all_tsne = all_tsne_scrambled[inverse_chosen_indeces2, :]
