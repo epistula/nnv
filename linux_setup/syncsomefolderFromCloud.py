@@ -54,7 +54,8 @@ experiment_folders = [
 					 ]
 
 experiment_folders = [
-					   './EEEexperimentsStable-WAEVanilla-MNIST/eb4dcc5d20c244b189c7bf0735a26440/'
+					   './EEEexperimentsStable-WAEVanilla-MNIST/eb4dcc5d20c244b189c7bf0735a26440/',
+					   './EEEexperimentsStable-WAEVanilla-MNIST/8bcb9475a5414693bc810ee1b5b15105/',
 					 ]
 					 
 for experiment_folder in experiment_folders:

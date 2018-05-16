@@ -23,7 +23,8 @@ mac_loc_str = '/Users/MeVlana/'
 # zone = 'us-central1-c'
 
 # cirra_loc_str = 'instance1-east1d-1gpu2cpu12mem50hd-hour0-402-month293-12'
-cirra_loc_str = 'instance1-east1d-1gpu1cpu6mem50hd-hour0-361-month263-67'
+# cirra_loc_str = 'instance1-east1d-1gpu1cpu6mem50hd-hour0-361-month263-67'
+cirra_loc_str = 'instance1-east1d-1gpu1cpu12mem50hd-hour0-397-month289-71'
 zone = 'us-east1-d'
 
 for f in list_of_files:

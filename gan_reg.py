@@ -18,8 +18,8 @@ import tensorflow as tf
 # dataset_to_use = 'IMAGENET'
 # dataset_to_use = 'BEDROOM'
 # dataset_to_use = 'CELEB'
-# dataset_to_use = 'CIFAR10'
-dataset_to_use = 'MNIST'
+dataset_to_use = 'CIFAR10'
+# dataset_to_use = 'MNIST'
 # dataset_to_use = 'CAT'
 # dataset_to_use = 'FLOWERS'
 # dataset_to_use = 'CUB'
@@ -40,7 +40,7 @@ elif Algorithm == 'WAEVanilla':
                              'encoder_mode': 'UnivApprox', 'divergence_mode': 'MMD', 'dual_dist_mode': '', 
                              'enc_normalization_mode': 'None', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'None', 
                              # 'enc_normalization_mode': 'None', 'gen_normalization_mode': 'None', 'cri_normalization_mode': 'None', 
-                             'enc_reg_strength': 10, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 
+                             'enc_reg_strength': 5, 'enc_inv_MMD_n_trans': 5, 'enc_inv_MMD_strength': 10, 
                              'critic_reg_mode': [], 'cri_reg_strength': 0, 'lambda_mix': 0.25}
 elif Algorithm == 'WGANGP':
     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0.5, 'beta2': 0.9,
@@ -455,12 +455,14 @@ elif dataset_to_use == 'CIFAR10':
     parser.add_argument('--reconst_vis_epoch_rate', type=list, default=[3,1], help='reconst epoch repeat')
     parser.add_argument('--interpolate_vis_epoch_rate', type=list, default=[3,1], help='interpolation epoch repeat')
     parser.add_argument('--fixed_samples_vis_epoch_rate', type=list, default=[3,1], help='fixed samples epoch repeat')
-    parser.add_argument('--fid_inception_score_epoch_rate', type=list, default=[50,10], help='compute fid and inception score')
+    # parser.add_argument('--fid_inception_score_epoch_rate', type=list, default=[50,10], help='compute fid and inception score')
+    parser.add_argument('--fid_inception_score_epoch_rate', type=list, default=[0,1], help='compute fid and inception score')
     parser.add_argument('--pigeonhole_score_epoch_rate', type=list, default=[0,1], help='compute pigeonhole score')
 
     parser.add_argument('--n_context', type=int, default=1, help='n_context.')
     parser.add_argument('--n_state', type=int, default=1, help='n_state.')
-    parser.add_argument('--n_latent', type=int, default=48, help='n_latent.')
+    # parser.add_argument('--n_latent', type=int, default=48, help='n_latent.')
+    parser.add_argument('--n_latent', type=int, default=64, help='n_latent.')
     # parser.add_argument('--n_latent', type=int, default=alg_specific_settings['n_latent'], help='n_latent.')
     parser.add_argument('--n_filter', type=int, default=alg_specific_settings['n_filter'], help='n_filter.')
     parser.add_argument('--n_flat', type=int, default=400, help='n_flat.')
