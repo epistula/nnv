@@ -105,30 +105,36 @@ class Encoder():
 				
 				# # 28x28xn_channels
 				if image_shape == (28, 28):
+					print('CHECK ME I AM FULLY CONNECTED~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')				
+					lay1_flat = tf.layers.dense(inputs = x_batched_inp_flat, units = self.config['n_flat'], activation = self.activation_function)
+					lay2_flat = tf.layers.dense(inputs = lay1_flat, units = self.config['n_flat'], activation = self.activation_function)
+					latent_image_flat = tf.layers.dense(inputs = lay2_flat, units = self.config['n_flat'], activation = None)
+					
+					latent_image_flat = 3*tf.nn.tanh(latent_image_flat)
 
-					lay1_image = tf.layers.conv2d(inputs=image_input, filters=self.config['n_filter'], kernel_size=[5, 5], strides=[2, 2], padding="valid", use_bias=True, activation=None)
-					if self.normalization_mode == 'Layer Norm': 
-						lay2_image = self.activation_function(helper.conv_layer_norm_layer(lay1_image))
-					elif self.normalization_mode == 'Batch Norm': 
-						lay2_image = self.activation_function(helper.batch_norm()(lay1_image))
-					else: lay2_image = self.activation_function(lay1_image)
+					# lay1_image = tf.layers.conv2d(inputs=image_input, filters=self.config['n_filter'], kernel_size=[5, 5], strides=[2, 2], padding="valid", use_bias=True, activation=None)
+					# if self.normalization_mode == 'Layer Norm': 
+					# 	lay2_image = self.activation_function(helper.conv_layer_norm_layer(lay1_image))
+					# elif self.normalization_mode == 'Batch Norm': 
+					# 	lay2_image = self.activation_function(helper.batch_norm()(lay1_image))
+					# else: lay2_image = self.activation_function(lay1_image)
 
-					lay3_image = tf.layers.conv2d(inputs=lay2_image, filters=1*self.config['n_filter'], kernel_size=[5, 5], strides=[1, 1], padding="valid", use_bias=True, activation=None)
-					if self.normalization_mode == 'Layer Norm': 
-						lay4_image = self.activation_function(helper.conv_layer_norm_layer(lay3_image))
-					elif self.normalization_mode == 'Batch Norm': 
-						lay4_image = self.activation_function(helper.batch_norm()(lay3_image))
-					else: lay4_image = self.activation_function(lay3_image)
+					# lay3_image = tf.layers.conv2d(inputs=lay2_image, filters=1*self.config['n_filter'], kernel_size=[5, 5], strides=[1, 1], padding="valid", use_bias=True, activation=None)
+					# if self.normalization_mode == 'Layer Norm': 
+					# 	lay4_image = self.activation_function(helper.conv_layer_norm_layer(lay3_image))
+					# elif self.normalization_mode == 'Batch Norm': 
+					# 	lay4_image = self.activation_function(helper.batch_norm()(lay3_image))
+					# else: lay4_image = self.activation_function(lay3_image)
 
-					lay5_image = tf.layers.conv2d(inputs=lay4_image, filters=2*self.config['n_filter'], kernel_size=[4, 4], strides=[1, 1], padding="valid", use_bias=True, activation=None)
-					if self.normalization_mode == 'Layer Norm': 
-						lay6_image = self.activation_function(helper.conv_layer_norm_layer(lay5_image))
-					elif self.normalization_mode == 'Batch Norm': 
-						lay6_image = self.activation_function(helper.batch_norm()(lay5_image))
-					else: lay6_image = self.activation_function(lay5_image)
+					# lay5_image = tf.layers.conv2d(inputs=lay4_image, filters=2*self.config['n_filter'], kernel_size=[4, 4], strides=[1, 1], padding="valid", use_bias=True, activation=None)
+					# if self.normalization_mode == 'Layer Norm': 
+					# 	lay6_image = self.activation_function(helper.conv_layer_norm_layer(lay5_image))
+					# elif self.normalization_mode == 'Batch Norm': 
+					# 	lay6_image = self.activation_function(helper.batch_norm()(lay5_image))
+					# else: lay6_image = self.activation_function(lay5_image)
 
-					latent_image = tf.layers.conv2d(inputs=lay6_image, filters=2*self.config['n_filter'], kernel_size=[3, 3], strides=[1, 1], padding="valid", use_bias=True, activation=self.activation_function)
-					latent_image_flat = tf.reshape(latent_image, [-1, np.prod(latent_image.get_shape().as_list()[1:])])
+					# latent_image = tf.layers.conv2d(inputs=lay6_image, filters=2*self.config['n_filter'], kernel_size=[3, 3], strides=[1, 1], padding="valid", use_bias=True, activation=self.activation_function)
+					# latent_image_flat = tf.reshape(latent_image, [-1, np.prod(latent_image.get_shape().as_list()[1:])])
 
 				# # 32x32xn_channels
 				if image_shape == (32, 32):
@@ -241,41 +247,47 @@ class Generator():
 				
 				# # 28x28xn_channels
 				if image_shape == (28, 28):
+					print('CHECK ME I AM FULLY CONNECTED~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')				
+					lay1_image = tf.layers.dense(inputs = x_batched_inp_flat, units = self.config['n_flat'], activation = self.activation_function)
+					lay2_image = tf.layers.dense(inputs = lay1_image, units = self.config['n_flat'], activation = self.activation_function)
+					lay3_image = tf.layers.dense(inputs = lay2_image, units = n_image_size*n_output_channels, activation = self.activation_function)
+					lay4_image = tf.nn.sigmoid(lay3_image)
+					image_param = tf.reshape(lay4_image, [-1, *image_shape, n_output_channels])
 
-					lay1_image = tf.layers.dense(inputs = x_batched_inp_flat, units = 8*self.config['n_filter']*4*4, activation = None)
-					lay2_image = tf.reshape(lay1_image, [-1, 4, 4, 8*self.config['n_filter']])
-					if self.normalization_mode == 'Layer Norm': 
-						lay3_image = self.activation_function(helper.conv_layer_norm_layer(lay2_image))
-					elif self.normalization_mode == 'Batch Norm': 
-						lay3_image = self.activation_function(helper.batch_norm()(lay2_image))
-					else: lay3_image = self.activation_function(lay2_image) #h0
+					# lay1_image = tf.layers.dense(inputs = x_batched_inp_flat, units = 8*self.config['n_filter']*4*4, activation = None)
+					# lay2_image = tf.reshape(lay1_image, [-1, 4, 4, 8*self.config['n_filter']])
+					# if self.normalization_mode == 'Layer Norm': 
+					# 	lay3_image = self.activation_function(helper.conv_layer_norm_layer(lay2_image))
+					# elif self.normalization_mode == 'Batch Norm': 
+					# 	lay3_image = self.activation_function(helper.batch_norm()(lay2_image))
+					# else: lay3_image = self.activation_function(lay2_image) #h0
 
-					lay4_image = tf.layers.conv2d_transpose(inputs=lay3_image, filters=4*self.config['n_filter'], kernel_size=[5, 5], strides=[2, 2], activation=None)
-					lay5_image = helper.tf_center_crop_image(lay4_image, resize_ratios=[8,8])
-					if self.normalization_mode == 'Layer Norm': 
-						lay6_image = self.activation_function(helper.conv_layer_norm_layer(lay5_image))
-					elif self.normalization_mode == 'Batch Norm': 
-						lay6_image = self.activation_function(helper.batch_norm()(lay5_image))
-					else: lay6_image = self.activation_function(lay5_image) #h1
+					# lay4_image = tf.layers.conv2d_transpose(inputs=lay3_image, filters=4*self.config['n_filter'], kernel_size=[5, 5], strides=[2, 2], activation=None)
+					# lay5_image = helper.tf_center_crop_image(lay4_image, resize_ratios=[8,8])
+					# if self.normalization_mode == 'Layer Norm': 
+					# 	lay6_image = self.activation_function(helper.conv_layer_norm_layer(lay5_image))
+					# elif self.normalization_mode == 'Batch Norm': 
+					# 	lay6_image = self.activation_function(helper.batch_norm()(lay5_image))
+					# else: lay6_image = self.activation_function(lay5_image) #h1
 
-					lay7_image = tf.layers.conv2d_transpose(inputs=lay6_image, filters=2*self.config['n_filter'], kernel_size=[5, 5], strides=[2, 2], activation=None)
-					lay8_image = helper.tf_center_crop_image(lay7_image, resize_ratios=[16,16])
-					if self.normalization_mode == 'Layer Norm': 
-						lay9_image = self.activation_function(helper.conv_layer_norm_layer(lay8_image))
-					elif self.normalization_mode == 'Batch Norm': 
-						lay9_image = self.activation_function(helper.batch_norm()(lay8_image))
-					else: lay9_image = self.activation_function(lay8_image) #h2
+					# lay7_image = tf.layers.conv2d_transpose(inputs=lay6_image, filters=2*self.config['n_filter'], kernel_size=[5, 5], strides=[2, 2], activation=None)
+					# lay8_image = helper.tf_center_crop_image(lay7_image, resize_ratios=[16,16])
+					# if self.normalization_mode == 'Layer Norm': 
+					# 	lay9_image = self.activation_function(helper.conv_layer_norm_layer(lay8_image))
+					# elif self.normalization_mode == 'Batch Norm': 
+					# 	lay9_image = self.activation_function(helper.batch_norm()(lay8_image))
+					# else: lay9_image = self.activation_function(lay8_image) #h2
 
-					lay10_image = tf.layers.conv2d_transpose(inputs=lay9_image, filters=1*self.config['n_filter'], kernel_size=[5, 5], strides=[2, 2], activation=None)
-					lay11_image = helper.tf_center_crop_image(lay10_image, resize_ratios=[28,28])
-					if self.normalization_mode == 'Layer Norm': 
-						lay12_image = self.activation_function(helper.conv_layer_norm_layer(lay11_image))
-					elif self.normalization_mode == 'Batch Norm': 
-						lay12_image = self.activation_function(helper.batch_norm()(lay11_image))
-					else: lay12_image = self.activation_function(lay11_image) #h3
+					# lay10_image = tf.layers.conv2d_transpose(inputs=lay9_image, filters=1*self.config['n_filter'], kernel_size=[5, 5], strides=[2, 2], activation=None)
+					# lay11_image = helper.tf_center_crop_image(lay10_image, resize_ratios=[28,28])
+					# if self.normalization_mode == 'Layer Norm': 
+					# 	lay12_image = self.activation_function(helper.conv_layer_norm_layer(lay11_image))
+					# elif self.normalization_mode == 'Batch Norm': 
+					# 	lay12_image = self.activation_function(helper.batch_norm()(lay11_image))
+					# else: lay12_image = self.activation_function(lay11_image) #h3
 
-					lay13_image = tf.layers.conv2d_transpose(inputs=lay12_image, filters=n_output_channels, kernel_size=[3, 3], strides=[1, 1], activation=tf.nn.sigmoid)
-					image_param = helper.tf_center_crop_image(lay13_image, resize_ratios=[28,28])
+					# lay13_image = tf.layers.conv2d_transpose(inputs=lay12_image, filters=n_output_channels, kernel_size=[3, 3], strides=[1, 1], activation=tf.nn.sigmoid)
+					# image_param = helper.tf_center_crop_image(lay13_image, resize_ratios=[28,28])
 
 				# # 32x32xn_channels
 				if image_shape == (32, 32):

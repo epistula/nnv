@@ -16,6 +16,7 @@ cirra_loc_str = 'instance-east1d-8cpu15mem30hd-hour0-234-month170-89'
 zone = 'us-east1-d'
 
 
+# list_of_files = [('Visualization/test_TSNE_prior_posterior/', '.png'),
 
 list_of_files = [('Visualization/', '.png'),
 				 ('', '.txt'),
@@ -44,19 +45,23 @@ list_of_files = [('Visualization/', '.png'),
 # experiment_folder = './EEEexperimentsLastMIX-PDWGANCannon2-CIFAR10/164e400217cb483a8c4cc1af0e0c0c3a/'
 # experiment_folder = './EEEexperimentsLastMIX-PDWGANCannon2-CIFAR10/98ee5405af7a4f64ab2570dc128e9237/'
 
-# experiment_folder = './EEEexperimentsStable-WAEVanilla-INTENSITY/0156f7e3571449d384b8b465b581fbd5/' #Gaussian
-experiment_folder = './EEEexperimentsStable-WAEVanilla-INTENSITY/c762a8e29481410ca7ad09d859d94e5e/' #Uniform
 
-main_folder = '~/tensorflowCode/'+experiment_folder
-mac_loc_str = '/Users/MeVlana/CloudExperiments/'
+experiment_folders = [
+					'./EEEexperimentsStable-WAEVanilla-INTENSITY/0156f7e3571449d384b8b465b581fbd5/', #Gaussian
+					'./EEEexperimentsStable-WAEVanilla-INTENSITY/c762a8e29481410ca7ad09d859d94e5e/', #Uniform
+					'./EEEexperimentsStable-WAEVanilla-INTENSITY/b09ffa0646964cd79da8d126754c67d8/', #Uniform rand
+					 ]
+for experiment_folder in experiment_folders:
+	main_folder = '~/tensorflowCode/'+experiment_folder
+	mac_loc_str = '/Users/MeVlana/CloudExperiments/'
 
-for f in list_of_files:
-	subfolder = f[0] 
-	extension = f[1]
-	source_dir = main_folder+subfolder
-	target_dir = mac_loc_str+experiment_folder+subfolder
+	for f in list_of_files:
+		subfolder = f[0] 
+		extension = f[1]
+		source_dir = main_folder+subfolder
+		target_dir = mac_loc_str+experiment_folder+subfolder
 
-	if not os.path.exists(target_dir): os.makedirs(target_dir)
-	run('echo gcloud compute scp '+ cirra_loc_str+':'+source_dir+'*'+extension+' '+target_dir+' '+ '--zone ' + zone)
-	run('gcloud compute scp '+ cirra_loc_str+':'+source_dir+'*'+extension+' '+target_dir+' '+ '--zone ' + zone)
+		if not os.path.exists(target_dir): os.makedirs(target_dir)
+		run('echo gcloud compute scp '+ cirra_loc_str+':'+source_dir+'*'+extension+' '+target_dir+' '+ '--zone ' + zone)
+		run('gcloud compute scp '+ cirra_loc_str+':'+source_dir+'*'+extension+' '+target_dir+' '+ '--zone ' + zone)
 
