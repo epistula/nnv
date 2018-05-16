@@ -154,6 +154,44 @@ class Model():
         integral /= n_transforms
         return integral
 
+    def stable_div_expanded(self, div_func, batch_input, batch_rand_dirs_expanded):        
+        n_transforms = batch_rand_dirs_expanded.get_shape().as_list()[0]
+        n_reflections = batch_rand_dirs_expanded.get_shape().as_list()[1]
+        batch_rand_dirs_expanded = tf.stop_gradient(batch_rand_dirs_expanded)
+
+        integral = 0
+        for i in range(n_transforms):
+            batch_input_transformed_1 = batch_input
+            for j in range(n_reflections-1):
+                batch_input_transformed_1 = self.apply_single_householder_reflection(batch_input_transformed_1, batch_rand_dirs_expanded[i, j, :])
+            batch_input_transformed_2 = self.apply_single_householder_reflection(batch_input_transformed_1, batch_rand_dirs_expanded[i, -1, :])
+            integral += div_func(tf.reverse(batch_input_transformed_1, [0]), batch_input)
+            integral += div_func(tf.reverse(batch_input_transformed_2, [0]), batch_input)
+        integral /= 2*n_transforms    
+        return integral
+
+        # batch_rand_dirs = batch_rand_dirs_expanded[:, 0, :]
+        # transformed_batch_input = self.apply_rotations_reflections(batch_input, batch_rand_dirs_expanded)
+        # list_transformed_batch_input = tf.split(transformed_batch_input, n_transforms, axis=1)
+        # integral = 0
+        # for e in list_transformed_batch_input: 
+        #     t_i_batch_input_inverted = tf.reverse(e[:,0,:], [0])
+        #     integral += div_func(t_i_batch_input_inverted, batch_input)
+        # integral /= n_transforms
+        # return integral
+
+    def apply_single_householder_reflection(self, batch_input, v_householder):
+        v_householder_expanded = v_householder[np.newaxis, :]
+        householder_inner = tf.reduce_sum(v_householder_expanded*batch_input, axis=1, keep_dims=True)  
+        batch_out = batch_input-2*householder_inner*v_householder_expanded
+        return batch_out
+
+    def apply_rotations_reflections(self, batch_input, batch_rand_dirs_expanded):
+        v_householder = batch_rand_dirs[np.newaxis, :,:]
+        batch_input_expand = batch_input[:,np.newaxis, :]
+        householder_inner_expand = tf.reduce_sum(v_householder*batch_input_expand, axis=2, keep_dims=True)  
+        return batch_input_expand-2*householder_inner_expand*v_householder
+
     def apply_householder_reflections(self, batch_input, batch_rand_dirs):
         v_householder = batch_rand_dirs[np.newaxis, :,:]
         batch_input_expand = batch_input[:,np.newaxis, :]
@@ -293,6 +331,13 @@ class Model():
             batch_rand_vectors = tf.random_normal(shape=[self.config['enc_inv_MMD_n_trans'], self.config['n_latent']])
             batch_rand_dirs = batch_rand_vectors/helper.safe_tf_sqrt(tf.reduce_sum((batch_rand_vectors**2), axis=1, keep_dims=True))            
             self.Inv_MMD = self.stable_div(self.compute_MMD, self.posterior_latent_code, batch_rand_dirs)
+            self.MMD = self.compute_MMD(self.posterior_latent_code, self.prior_dist.sample())
+            self.enc_reg_cost = self.MMD + self.config['enc_inv_MMD_strength']*self.Inv_MMD
+        if self.config['divergence_mode'] == 'INV-MMD2': 
+            batch_rand_vectors = tf.random_normal(shape=[self.config['enc_inv_MMD_n_trans']*self.config['enc_inv_MMD_n_reflect'], self.config['n_latent']])
+            batch_rand_dirs = batch_rand_vectors/helper.safe_tf_sqrt(tf.reduce_sum((batch_rand_vectors**2), axis=1, keep_dims=True)) 
+            batch_rand_dirs_expanded = tf.reshape(batch_rand_dirs, [self.config['enc_inv_MMD_n_trans'], self.config['enc_inv_MMD_n_reflect'], self.config['n_latent']])           
+            self.Inv_MMD = self.stable_div_expanded(self.compute_MMD, self.posterior_latent_code, batch_rand_dirs_expanded)
             self.MMD = self.compute_MMD(self.posterior_latent_code, self.prior_dist.sample())
             self.enc_reg_cost = self.MMD + self.config['enc_inv_MMD_strength']*self.Inv_MMD
         elif self.config['divergence_mode'] == 'GAN' or self.config['divergence_mode'] == 'NS-GAN':
