@@ -106,12 +106,16 @@ class Model():
         z_interp = t*z_a[:, np.newaxis, :]+(1-t)*z_b[:, np.newaxis, :]
         return z_interp
 
-    def compute_MMD(self, sample_batch_1, sample_batch_2, mode='His'):
+    def compute_MMD(self, sample_batch_1, sample_batch_2, mode='Mine'):
         if mode == 'Mine':
-            k_sample_1_2 = tf.reduce_mean(self.kernel_function(sample_batch_1, sample_batch_2))
-            k_sample_1_1 = tf.reduce_mean(self.kernel_function(sample_batch_1))
-            k_sample_2_2 = tf.reduce_mean(self.kernel_function(sample_batch_2))
-            MMD = k_sample_2_2+k_sample_1_1-2*k_sample_1_2
+            scales = [.1, .2, .5, 1., 2., 5., 10.]
+            MMD = 0
+            for scale in scales:
+                k_sample_1_2 = tf.reduce_mean(self.kernel_function(sample_batch_1, sample_batch_2, sigma_z_sq=scale))
+                k_sample_1_1 = tf.reduce_mean(self.kernel_function(sample_batch_1, sigma_z_sq=scale))
+                k_sample_2_2 = tf.reduce_mean(self.kernel_function(sample_batch_2, sigma_z_sq=scale))
+                curr_MMD = k_sample_2_2+k_sample_1_1-2*k_sample_1_2
+                MMD = MMD + curr_MMD
         else:
             sample_qz, sample_pz = sample_batch_1, sample_batch_2
             sigma2_p = 1 ** 2
@@ -131,7 +135,8 @@ class Model():
 
             Cbase = 2.
             stat = 0.
-            for scale in [.1, .2, .5, 1., 2., 5., 10.]:
+            scales = [.1, .2, .5, 1., 2., 5., 10.]
+            for scale in scales:
                 C = Cbase * scale
                 res1 = C / (C + distances_qz)
                 res1 += C / (C + distances_pz)
@@ -140,8 +145,9 @@ class Model():
                 res2 = C / (C + distances)
                 res2 = tf.reduce_sum(res2) * 2. / (nf * nf)
                 stat += res1 - res2
-            MMD = stat
+            MMD = stat #/len(scales)
         return MMD
+
 
     def stable_div(self, div_func, batch_input, batch_rand_dirs):
         n_transforms = batch_rand_dirs.get_shape().as_list()[0]
@@ -165,7 +171,7 @@ class Model():
 
         integral = 0
         for j in range(n_transforms):
-            integral += tf.nn.relu(div_func(transformed_batch_input_inverse[j,:,:], batch_input))
+            integral += div_func(transformed_batch_input_inverse[j,:,:], batch_input)
         integral /= n_transforms
         return integral
 
