@@ -106,22 +106,12 @@ class Model():
         z_interp = t*z_a[:, np.newaxis, :]+(1-t)*z_b[:, np.newaxis, :]
         return z_interp
 
-    def compute_MMD(self, sample_batch_1, sample_batch_2, mode='His', force_positive=False):
+    def compute_MMD(self, sample_batch_1, sample_batch_2, mode='His'):
         if mode == 'Mine':
-            scales = [.1, .2, .5, 1., 2., 5., 10.]
-            MMD = 0
-            for scale in scales:
-                # blah = sample_batch_1-sample_batch_2
-                # blah_min = tf.reduce_min(tf.abs(blah))
-                # blah_max = tf.reduce_max(tf.abs(blah))
-                # sample_batch_1 = sample_batch_1+(blah_min-blah_min)+(blah_max-blah_max)
-                k_sample_1_2 = tf.reduce_mean(self.kernel_function(sample_batch_1, sample_batch_2, sigma_z_sq=scale))
-                k_sample_1_1 = tf.reduce_mean(self.kernel_function(sample_batch_1, sigma_z_sq=scale))
-                k_sample_2_2 = tf.reduce_mean(self.kernel_function(sample_batch_2, sigma_z_sq=scale))
-                curr_MMD = k_sample_2_2+k_sample_1_1-2*k_sample_1_2
-
-                # curr_MMD = helper.tf_print(curr_MMD,[curr_MMD, k_sample_2_2-k_sample_1_1, k_sample_2_2, k_sample_1_1, blah_max, blah_min])
-                MMD = MMD + curr_MMD
+            k_sample_1_2 = tf.reduce_mean(self.kernel_function(sample_batch_1, sample_batch_2))
+            k_sample_1_1 = tf.reduce_mean(self.kernel_function(sample_batch_1))
+            k_sample_2_2 = tf.reduce_mean(self.kernel_function(sample_batch_2))
+            MMD = k_sample_2_2+k_sample_1_1-2*k_sample_1_2
         else:
             sample_qz, sample_pz = sample_batch_1, sample_batch_2
             sigma2_p = 1 ** 2
@@ -141,8 +131,7 @@ class Model():
 
             Cbase = 2.
             stat = 0.
-            scales = [.1, .2, .5, 1., 2., 5., 10.]
-            for scale in scales:
+            for scale in [.1, .2, .5, 1., 2., 5., 10.]:
                 C = Cbase * scale
                 res1 = C / (C + distances_qz)
                 res1 += C / (C + distances_pz)
@@ -151,11 +140,8 @@ class Model():
                 res2 = C / (C + distances)
                 res2 = tf.reduce_sum(res2) * 2. / (nf * nf)
                 stat += res1 - res2
-            MMD = stat #/len(scales)
-        
-        if force_positive: MMD = tf.nn.relu(MMD)
+            MMD = stat
         return MMD
-
 
     def stable_div(self, div_func, batch_input, batch_rand_dirs):
         n_transforms = batch_rand_dirs.get_shape().as_list()[0]
@@ -172,8 +158,10 @@ class Model():
         n_transforms = batch_rand_dirs_expanded.get_shape().as_list()[0]
         n_reflections = batch_rand_dirs_expanded.get_shape().as_list()[1]
         
-        batch_input_to_transform = batch_input[:self.batch_size_tf//2, :]
-        batch_input_to_compare = batch_input[self.batch_size_tf//2:, :]
+        # batch_input_to_transform = batch_input[:self.batch_size_tf//2, :]
+        # batch_input_to_compare = batch_input[self.batch_size_tf//2:, :]
+        batch_input_to_transform = batch_input
+        batch_input_to_compare = batch_input
 
         transformed_batch_input = batch_input_to_transform[np.newaxis, :, :]
         for i in range(n_reflections):
@@ -334,14 +322,41 @@ class Model():
         self.reconst_dist = distributions.ProductDistribution(sample_properties = batch['observed']['properties'], params = self.reconst_param)
         self.reconst_sample = self.reconst_dist.sample(b_mode=True)
 
+        # ### Primal Penalty
+        # if self.config['divergence_mode'] == 'MMD': 
+        #     self.MMD = self.compute_MMD(self.posterior_latent_code, self.prior_dist.sample())
+        #     self.enc_reg_cost = self.MMD
+        # if self.config['divergence_mode'] == 'INV-MMD': 
+        #     batch_rand_vectors = tf.random_normal(shape=[self.config['enc_inv_MMD_n_trans'], self.config['n_latent']])
+        #     batch_rand_dirs = batch_rand_vectors/helper.safe_tf_sqrt(tf.reduce_sum((batch_rand_vectors**2), axis=1, keep_dims=True))  
+        #     batch_rand_dirs = tf.stop_gradient(batch_rand_dirs)          
+        #     self.Inv_MMD = self.stable_div(self.compute_MMD, self.posterior_latent_code, batch_rand_dirs)
+        #     self.MMD = self.compute_MMD(self.posterior_latent_code, self.prior_dist.sample())
+        #     self.enc_reg_cost = self.MMD + self.config['enc_inv_MMD_strength']*self.Inv_MMD
+        # if self.config['divergence_mode'] == 'INV-MMD2': 
+        #     batch_rand_vectors = tf.random_normal(shape=[self.config['enc_inv_MMD_n_trans']*self.config['enc_inv_MMD_n_reflect'], self.config['n_latent']])
+        #     batch_rand_dirs = batch_rand_vectors/helper.safe_tf_sqrt(tf.reduce_sum((batch_rand_vectors**2), axis=1, keep_dims=True)) 
+        #     batch_rand_dirs_expanded = tf.reshape(batch_rand_dirs, [self.config['enc_inv_MMD_n_trans'], self.config['enc_inv_MMD_n_reflect'], self.config['n_latent']])           
+        #     batch_rand_dirs_expanded = tf.stop_gradient(batch_rand_dirs_expanded)          
+        #     self.Inv_MMD = self.stable_div_expanded(self.compute_MMD, self.posterior_latent_code, batch_rand_dirs_expanded)
+        #     self.MMD = self.compute_MMD(self.posterior_latent_code, self.prior_dist.sample())
+        #     self.enc_reg_cost = self.MMD + self.config['enc_inv_MMD_strength']*self.Inv_MMD
+        # elif self.config['divergence_mode'] == 'GAN' or self.config['divergence_mode'] == 'NS-GAN':
+        #     self.div_posterior = self.Diverger.forward(self.posterior_latent_code_expanded)        
+        #     self.div_prior = self.Diverger.forward(self.prior_latent_code_expanded)   
+        #     self.mean_z_divergence = tf.reduce_mean(tf.log(10e-7+self.div_prior))+tf.reduce_mean(tf.log(10e-7+1-self.div_posterior))
+        #     if self.config['divergence_mode'] == 'NS-GAN': 
+        #         self.enc_reg_cost = -tf.reduce_mean(tf.log(10e-7+self.div_posterior))
+        #     elif self.config['divergence_mode'] == 'GAN': 
+        #         self.enc_reg_cost = tf.reduce_mean(tf.log(10e-7+1-self.div_posterior))
+
         ### Primal Penalty
         if self.config['divergence_mode'] == 'MMD': 
             self.MMD = self.compute_MMD(self.posterior_latent_code, self.prior_dist.sample())
             self.enc_reg_cost = self.MMD
         if self.config['divergence_mode'] == 'INV-MMD': 
             batch_rand_vectors = tf.random_normal(shape=[self.config['enc_inv_MMD_n_trans'], self.config['n_latent']])
-            batch_rand_dirs = batch_rand_vectors/helper.safe_tf_sqrt(tf.reduce_sum((batch_rand_vectors**2), axis=1, keep_dims=True))  
-            batch_rand_dirs = tf.stop_gradient(batch_rand_dirs)          
+            batch_rand_dirs = batch_rand_vectors/helper.safe_tf_sqrt(tf.reduce_sum((batch_rand_vectors**2), axis=1, keep_dims=True))            
             self.Inv_MMD = self.stable_div(self.compute_MMD, self.posterior_latent_code, batch_rand_dirs)
             self.MMD = self.compute_MMD(self.posterior_latent_code, self.prior_dist.sample())
             self.enc_reg_cost = self.MMD + self.config['enc_inv_MMD_strength']*self.Inv_MMD
@@ -353,7 +368,7 @@ class Model():
             self.Inv_MMD = self.stable_div_expanded(self.compute_MMD, self.posterior_latent_code, batch_rand_dirs_expanded)
             self.MMD = self.compute_MMD(self.posterior_latent_code, self.prior_dist.sample())
             self.enc_reg_cost = self.MMD + self.config['enc_inv_MMD_strength']*self.Inv_MMD
-        elif self.config['divergence_mode'] == 'GAN' or self.config['divergence_mode'] == 'NS-GAN':
+        if self.config['divergence_mode'] == 'GAN' or self.config['divergence_mode'] == 'NS-GAN':
             self.div_posterior = self.Diverger.forward(self.posterior_latent_code_expanded)        
             self.div_prior = self.Diverger.forward(self.prior_latent_code_expanded)   
             self.mean_z_divergence = tf.reduce_mean(tf.log(10e-7+self.div_prior))+tf.reduce_mean(tf.log(10e-7+1-self.div_posterior))
@@ -361,6 +376,8 @@ class Model():
                 self.enc_reg_cost = -tf.reduce_mean(tf.log(10e-7+self.div_posterior))
             elif self.config['divergence_mode'] == 'GAN': 
                 self.enc_reg_cost = tf.reduce_mean(tf.log(10e-7+1-self.div_posterior))
+
+
 
         #############################################################################
         # REGULARIZER
