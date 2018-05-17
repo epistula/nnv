@@ -40,7 +40,7 @@ elif Algorithm == 'WAEVanilla':
                              'encoder_mode': 'UnivApprox', 'divergence_mode': 'INV-MMD2', 'dual_dist_mode': '', 
                              'enc_normalization_mode': 'None', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'None', 
                              # 'enc_normalization_mode': 'None', 'gen_normalization_mode': 'None', 'cri_normalization_mode': 'None', 
-                             'enc_reg_strength': 1, 'enc_inv_MMD_n_reflect': 3, 'enc_inv_MMD_n_trans': 10, 'enc_inv_MMD_strength': 100, 
+                             'enc_reg_strength': 10, 'enc_inv_MMD_n_reflect': 5, 'enc_inv_MMD_n_trans': 10, 'enc_inv_MMD_strength': 100, 
                              'critic_reg_mode': [], 'cri_reg_strength': 0, 'lambda_mix': 0.25}
 elif Algorithm == 'WGANGP':
     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0.5, 'beta2': 0.9,
@@ -88,7 +88,7 @@ parser.add_argument('--restore_dir', type=str, default='/15fc2c543c5c4d958a733f6
 parser.add_argument('--restore', type=bool, default=False, help='Restore model.')
 parser.add_argument('--gpu', type=str, default='0', help='gpu to use.')
 parser.add_argument('--epochs', type=int, default=1000000000, help='Number of epochs to train.')
-parser.add_argument('--batch_size', type=int, default=100, help='Input batch size for training.')
+parser.add_argument('--batch_size', type=int, default=50, help='Input batch size for training.')
 parser.add_argument('--time_steps', type=int, default=1, help='Number of timesteps')
 parser.add_argument('--seed', type=int, default=1123124, help='random seed')
     
