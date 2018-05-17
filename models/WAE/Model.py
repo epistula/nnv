@@ -154,6 +154,18 @@ class Model():
         integral /= n_transforms
         return integral
 
+    def stable_div2(self, div_func, batch_input, batch_rand_dirs):
+        n_transforms = batch_rand_dirs.get_shape().as_list()[0]
+        transformed_batch_input = self.apply_householder_reflections(batch_input, batch_rand_dirs)
+        transformed_batch_input_inverse = tf.reverse(transformed_batch_input, [0])
+        list_transformed_batch_input = tf.split(transformed_batch_input_inverse, n_transforms, axis=1)
+        integral = 0
+        for e in list_transformed_batch_input: 
+            integral += div_func(e[:,0,:], batch_input)
+        integral /= n_transforms
+        return integral
+
+
     def stable_div_expanded(self, div_func, batch_input, batch_rand_dirs_expanded):        
         n_transforms = batch_rand_dirs_expanded.get_shape().as_list()[0]
         n_reflections = batch_rand_dirs_expanded.get_shape().as_list()[1]
@@ -329,8 +341,9 @@ class Model():
             self.enc_reg_cost = self.MMD
         if self.config['divergence_mode'] == 'INV-MMD': 
             batch_rand_vectors = tf.random_normal(shape=[self.config['enc_inv_MMD_n_trans'], self.config['n_latent']])
-            batch_rand_dirs = batch_rand_vectors/helper.safe_tf_sqrt(tf.reduce_sum((batch_rand_vectors**2), axis=1, keep_dims=True))            
-            self.Inv_MMD = self.stable_div(self.compute_MMD, self.posterior_latent_code, batch_rand_dirs)
+            batch_rand_dirs = batch_rand_vectors/helper.safe_tf_sqrt(tf.reduce_sum((batch_rand_vectors**2), axis=1, keep_dims=True))  
+            batch_rand_dirs = tf.stop_gradient(batch_rand_dirs)          
+            self.Inv_MMD = self.stable_div2(self.compute_MMD, self.posterior_latent_code, batch_rand_dirs)
             self.MMD = self.compute_MMD(self.posterior_latent_code, self.prior_dist.sample())
             self.enc_reg_cost = self.MMD + self.config['enc_inv_MMD_strength']*self.Inv_MMD
         if self.config['divergence_mode'] == 'INV-MMD2': 
