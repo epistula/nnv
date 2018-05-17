@@ -115,7 +115,7 @@ class Model():
                 k_sample_1_1 = tf.reduce_mean(self.kernel_function(sample_batch_1, sigma_z_sq=scale))
                 k_sample_2_2 = tf.reduce_mean(self.kernel_function(sample_batch_2, sigma_z_sq=scale))
                 curr_MMD = k_sample_2_2+k_sample_1_1-2*k_sample_1_2
-                curr_MMD = helper.tf_print(curr_MMD,[curr_MMD, k_sample_2_2-k_sample_1_1, k_sample_2_2, k_sample_1_1, k_sample_2_2+k_sample_1_1, 2*k_sample_1_2])
+                # curr_MMD = helper.tf_print(curr_MMD,[curr_MMD, k_sample_2_2-k_sample_1_1, k_sample_2_2, k_sample_1_1, k_sample_2_2+k_sample_1_1, 2*k_sample_1_2])
                 MMD = MMD + curr_MMD
         else:
             sample_qz, sample_pz = sample_batch_1, sample_batch_2
@@ -172,6 +172,9 @@ class Model():
 
         integral = 0
         for j in range(n_transforms):
+            blah = transformed_batch_input_inverse[j,:,:]-batch_input
+            blah_min = tf.reduce_min(tf.abs(blah))
+            blah_min = helper.tf_print(blah_min,[blah_min,])
             integral += div_func(transformed_batch_input_inverse[j,:,:], batch_input)
         integral /= n_transforms
         return integral
