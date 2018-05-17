@@ -115,7 +115,7 @@ class Model():
                 k_sample_1_1 = tf.reduce_mean(self.kernel_function(sample_batch_1, sigma_z_sq=scale))
                 k_sample_2_2 = tf.reduce_mean(self.kernel_function(sample_batch_2, sigma_z_sq=scale))
                 curr_MMD = k_sample_2_2+k_sample_1_1-2*k_sample_1_2
-                curr_MMD = helper.tf_print(curr_MMD,[k_sample_2_2, k_sample_1_1, 2*k_sample_1_2])
+                curr_MMD = helper.tf_print(curr_MMD,[curr_MMD, k_sample_2_2, k_sample_1_1, k_sample_2_2+k_sample_1_1, 2*k_sample_1_2])
 
                 MMD = MMD + curr_MMD
 
