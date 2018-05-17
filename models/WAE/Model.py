@@ -165,7 +165,7 @@ class Model():
 
         integral = 0
         for j in range(n_transforms):
-            integral += div_func(transformed_batch_input_inverse[j,:,:], batch_input)
+            integral += tf.nn.relu(div_func(transformed_batch_input_inverse[j,:,:], batch_input))
         integral /= n_transforms
         return integral
 
