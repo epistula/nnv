@@ -154,54 +154,56 @@ class Model():
         integral /= n_transforms
         return integral
 
-    # def stable_div_expanded(self, div_func, batch_input, batch_rand_dirs_expanded):        
-    #     n_transforms = batch_rand_dirs_expanded.get_shape().as_list()[0]
-    #     n_reflections = batch_rand_dirs_expanded.get_shape().as_list()[1]
-        
-    #     batch_input_to_transform = batch_input[:self.batch_size_tf//2, :]
-    #     batch_input_to_compare = batch_input[self.batch_size_tf//2:, :]
-    #     # batch_input_to_transform = batch_input
-    #     # batch_input_to_compare = batch_input
-
-    #     transformed_batch_input = batch_input_to_transform[np.newaxis, :, :]
-    #     for i in range(n_reflections):
-    #         transformed_batch_input = self.apply_householder_reflections2(transformed_batch_input, batch_rand_dirs_expanded[:, i, :])
-    #     # transformed_batch_input_inverse = tf.reverse(transformed_batch_input, [1])
-
-    #     integral = 0
-    #     for j in range(n_transforms):
-    #         integral += div_func(transformed_batch_input_inverse[j,:,:], batch_input_to_compare)
-    #     integral /= n_transforms
-    #     return integral
-
     def stable_div_expanded(self, div_func, batch_input, batch_rand_dirs_expanded):        
         n_transforms = batch_rand_dirs_expanded.get_shape().as_list()[0]
         n_reflections = batch_rand_dirs_expanded.get_shape().as_list()[1]
         
-        batch_input_to_transform = batch_input[:self.batch_size_tf//2, :]
-        batch_input_to_compare = batch_input[self.batch_size_tf//2:, :]
+        # batch_input_to_transform = batch_input[:self.batch_size_tf//2, :]
+        # batch_input_to_compare = batch_input[self.batch_size_tf//2:, :]
+        batch_input_to_transform = batch_input
+        batch_input_to_compare = batch_input
+
         transformed_batch_input = batch_input_to_transform[np.newaxis, :, :]
         for i in range(n_reflections):
             transformed_batch_input = self.apply_householder_reflections2(transformed_batch_input, batch_rand_dirs_expanded[:, i, :])
-        transformed_batch_input_inverse = transformed_batch_input
-        integral1 = 0
+        # transformed_batch_input_inverse = tf.reverse(transformed_batch_input, [1])
+
+        integral = 0
         for j in range(n_transforms):
-            integral1 += div_func(transformed_batch_input_inverse[j,:,:], batch_input_to_compare)
-        integral1 /= n_transforms
-        
-        batch_input_to_transform = batch_input[self.batch_size_tf//2:, :]
-        batch_input_to_compare = batch_input[:self.batch_size_tf//2, :]
-        transformed_batch_input = batch_input_to_transform[np.newaxis, :, :]
-        for i in range(n_reflections):
-            transformed_batch_input = self.apply_householder_reflections2(transformed_batch_input, batch_rand_dirs_expanded[:, i, :])
-        transformed_batch_input_inverse = transformed_batch_input
-        integral2 = 0
-        for j in range(n_transforms):
-            integral2 += div_func(transformed_batch_input_inverse[j,:,:], batch_input_to_compare)
-        integral2 /= n_transforms
-        
-        integral = (integral1+integral2)/2.
+            integral += div_func(transformed_batch_input_inverse[j,:,:], batch_input_to_compare)
+        integral /= n_transforms
         return integral
+
+    # def stable_div_expanded(self, div_func, batch_input, batch_rand_dirs_expanded):        
+    #     n_transforms = batch_rand_dirs_expanded.get_shape().as_list()[0]
+    #     n_reflections = batch_rand_dirs_expanded.get_shape().as_list()[1]
+        
+    #     transformed_batch_input = batch_input[np.newaxis, :, :]
+    #     for i in range(n_reflections):
+    #         transformed_batch_input = self.apply_householder_reflections2(transformed_batch_input, batch_rand_dirs_expanded[:, i, :])
+
+    #     pdb.set_trace()
+    #     batch_input_to_transform = batch_input[self.batch_size_tf//2:, :]
+    #     batch_input_to_compare = batch_input[:self.batch_size_tf//2, :]
+
+    #     integral1 = 0
+    #     for j in range(n_transforms):
+    #         integral1 += div_func(transformed_batch_input_inverse[j,:,:], batch_input_to_compare)
+    #     integral1 /= n_transforms
+        
+    #     batch_input_to_transform = batch_input[self.batch_size_tf//2:, :]
+    #     batch_input_to_compare = batch_input[:self.batch_size_tf//2, :]
+    #     transformed_batch_input = batch_input_to_transform[np.newaxis, :, :]
+    #     for i in range(n_reflections):
+    #         transformed_batch_input = self.apply_householder_reflections2(transformed_batch_input, batch_rand_dirs_expanded[:, i, :])
+    #     transformed_batch_input_inverse = transformed_batch_input
+    #     integral2 = 0
+    #     for j in range(n_transforms):
+    #         integral2 += div_func(transformed_batch_input_inverse[j,:,:], batch_input_to_compare)
+    #     integral2 /= n_transforms
+        
+    #     integral = (integral1+integral2)/2.
+    #     return integral
 
     def apply_single_householder_reflection(self, batch_input, v_householder):
         v_householder_expanded = v_householder[np.newaxis, :]

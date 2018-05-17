@@ -68,7 +68,7 @@ experiment_folders = [
 experiment_folders = [
 					   # './EEEexperimentsStable-WAEVanilla-MNIST/3b9e13769ad14d7995b5ee08e4a7fd2f/',
 					   # './EEEexperimentsStable-WAEVanilla-MNIST/60b232ffebcd4edcbdaf632763095a7d/',
-					   './EEEexperimentsStable-WAEVanilla-MNIST/4e7468970f66469d8d9dfeb52790ed9d/',
+					   './EEEexperimentsStable-WAEVanilla-MNIST/bb6fa32c9edb48b0896f121ee5a423fe/',
 					 ]					
 
 					
