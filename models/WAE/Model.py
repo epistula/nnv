@@ -175,6 +175,7 @@ class Model():
             blah = transformed_batch_input_inverse[j,:,:]-batch_input
             blah_min = tf.reduce_min(tf.abs(blah))
             blah_min = helper.tf_print(blah_min,[blah_min,])
+            batch_input = batch_input+(blah_min-blah_min)
             integral += div_func(transformed_batch_input_inverse[j,:,:], batch_input)
         integral /= n_transforms
         return integral
