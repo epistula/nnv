@@ -158,10 +158,10 @@ class Model():
         n_transforms = batch_rand_dirs_expanded.get_shape().as_list()[0]
         n_reflections = batch_rand_dirs_expanded.get_shape().as_list()[1]
         
-        # batch_input_to_transform = batch_input[:self.batch_size_tf//2, :]
-        # batch_input_to_compare = batch_input[self.batch_size_tf//2:, :]
-        batch_input_to_transform = batch_input
-        batch_input_to_compare = batch_input
+        batch_input_to_transform = batch_input[:self.batch_size_tf//2, :]
+        batch_input_to_compare = batch_input[self.batch_size_tf//2:, :]
+        # batch_input_to_transform = batch_input
+        # batch_input_to_compare = batch_input
 
         transformed_batch_input = batch_input_to_transform[np.newaxis, :, :]
         for i in range(n_reflections):
