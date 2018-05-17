@@ -59,11 +59,18 @@ experiment_folders = [
 					   # './EEEexperimentsStable-WAEVanilla-CIFAR10/4550f229eff0418a90df5b080ef53614/',
 					 ]
 					 
-experiment_folders = [
-					   './EEEexperimentsStable-WAEVanilla-MNIST/b5251fc0c5d44584b9979bd95e271c8c/',
-					   './EEEexperimentsStable-WAEVanilla-MNIST/23635180a20f42c6ae779d580c360488/',
-					 ]
+# experiment_folders = [
+# 					   './EEEexperimentsStable-WAEVanilla-MNIST/b5251fc0c5d44584b9979bd95e271c8c/',
+# 					   './EEEexperimentsStable-WAEVanilla-MNIST/23635180a20f42c6ae779d580c360488/',
+# 					 ]
+
 					 
+experiment_folders = [
+					   './EEEexperimentsStable-WAEVanilla-MNIST/667912ea1d484cb9a03bf986a67fa134/',
+					   # './EEEexperimentsStable-WAEVanilla-MNIST/23635180a20f42c6ae779d580c360488/',
+					 ]					
+
+					
 
 for experiment_folder in experiment_folders:
 	main_folder = '~/tensorflowCode/'+experiment_folder
