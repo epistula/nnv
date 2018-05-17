@@ -40,6 +40,8 @@ plt.rcParams['axes.linewidth'] = 2
 # print_tensors_in_checkpoint_file(file_name=global_args.global_exp_dir+global_args.restore_dir+'/checkpoints/checkpoint', tensor_name='',all_tensors='')
 
 
+
+
 class MyAxes3D(axes3d.Axes3D):
 
     def __init__(self, baseObject, sides_to_draw):
@@ -133,6 +135,30 @@ def get_exp_dir(global_args):
 	with open(exp_dir+"Specs.txt", "w") as text_file:
 	    text_file.write(filestring)
 	return exp_dir
+
+def list_hyperparameters(exp_folder):
+    spec_file_path = exp_folder+'Specs.txt'
+    target_file_path = exp_folder+'Listed_Specs.txt'
+    with open(spec_file_path, "r") as text_file: data_lines = text_file.readlines()
+    all_data_str = ''.join(data_lines)
+    all_data_str = all_data_str.split('Namespace', 1)[-1]
+    all_data_str = all_data_str.rstrip("\n")
+    all_data_str = all_data_str[1:-1]
+    
+    split_list = all_data_str.split(',')
+    full_list = []
+    curr = []
+    for e in split_list:
+        if '=' in e:
+            full_list.append(''.join(curr))
+            curr = []
+        curr.append(e)
+    full_list = full_list[1:]
+    pro_full_list = []
+    for e in full_list: 
+        pro_full_list.append(e.strip().replace("'", '"')) 
+    pro_full_list.sort()
+    with open(target_file_path, "w") as text_file: text_file.write('\n'.join(pro_full_list))
 
 def debugger():
 	import sys, ipdb, traceback

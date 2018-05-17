@@ -702,6 +702,7 @@ tf.set_random_seed(global_args.seed)
 
 data_loader = DataLoader(batch_size = global_args.batch_size, time_steps = global_args.time_steps)
 global_args.exp_dir = helper.get_exp_dir(global_args)
+helper.list_hyperparameters(global_args.exp_dir)
 
 print("TENSORBOARD: Linux:\npython -m tensorflow.tensorboard --logdir=model1:"+\
     os.path.realpath(global_args.exp_dir)+" --port="+str(20000+int(global_args.exp_dir[-4:-1], 16))+" &")
