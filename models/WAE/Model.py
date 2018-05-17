@@ -114,7 +114,7 @@ class Model():
                 blah = sample_batch_1-sample_batch_2
                 blah_min = tf.reduce_min(tf.abs(blah))
                 blah_max = tf.reduce_max(tf.abs(blah))
-                blah_min = helper.tf_print(blah_min, [blah_min, blah_max])
+                # blah_min = helper.tf_print(blah_min, [blah_min, blah_max])
 
                 sample_batch_1 = sample_batch_1+(blah_min-blah_min)+(blah_max-blah_max)
 
