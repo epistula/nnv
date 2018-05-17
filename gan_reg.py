@@ -37,7 +37,7 @@ if Algorithm == 'WAE':
 elif Algorithm == 'WAEVanilla':
     alg_specific_settings = {'optimizer_class': 'Adam', 'learning_rate': 1e-4, 'beta1': 0.5, 'beta2': 0.999,  
                              'rel_enc_skip_rate': 1, 'rel_cri_skip_rate': 1, 'rel_gen_skip_rate': 1, 'n_filter': 32, 
-                             'encoder_mode': 'UnivApprox', 'divergence_mode': 'INV-MMD2', 'dual_dist_mode': '', 
+                             'encoder_mode': 'UnivApprox', 'divergence_mode': 'INV-MMD', 'dual_dist_mode': '', 
                              'enc_normalization_mode': 'None', 'gen_normalization_mode': 'Batch Norm', 'cri_normalization_mode': 'None', 
                              # 'enc_normalization_mode': 'None', 'gen_normalization_mode': 'None', 'cri_normalization_mode': 'None', 
                              'enc_reg_strength': 5, 'enc_inv_MMD_n_reflect': 1, 'enc_inv_MMD_n_trans': 10, 'enc_inv_MMD_strength': 100, 
