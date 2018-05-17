@@ -183,6 +183,7 @@ class Model():
         transformed_batch_input = batch_input_to_transform[np.newaxis, :, :]
         for i in range(n_reflections):
             transformed_batch_input = self.apply_householder_reflections2(transformed_batch_input, batch_rand_dirs_expanded[:, i, :])
+        transformed_batch_input_inverse = transformed_batch_input
         integral1 = 0
         for j in range(n_transforms):
             integral1 += div_func(transformed_batch_input_inverse[j,:,:], batch_input_to_compare)
@@ -193,6 +194,7 @@ class Model():
         transformed_batch_input = batch_input_to_transform[np.newaxis, :, :]
         for i in range(n_reflections):
             transformed_batch_input = self.apply_householder_reflections2(transformed_batch_input, batch_rand_dirs_expanded[:, i, :])
+        transformed_batch_input_inverse = transformed_batch_input
         integral2 = 0
         for j in range(n_transforms):
             integral2 += div_func(transformed_batch_input_inverse[j,:,:], batch_input_to_compare)
