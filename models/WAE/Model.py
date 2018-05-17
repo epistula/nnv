@@ -336,7 +336,8 @@ class Model():
             self.Inv_MMD = self.stable_div_expanded(self.compute_MMD, self.posterior_latent_code, batch_rand_dirs_expanded)
             self.MMD = self.compute_MMD(self.posterior_latent_code, self.prior_dist.sample())
             
-            self.MMD = helper.tf_print(self.MMD,[self.MMD,])
+            # self.MMD = helper.tf_print(self.MMD,[self.MMD,])
+            self.Inv_MMD = helper.tf_print(self.Inv_MMD,[self.Inv_MMD,])
 
             self.enc_reg_cost = self.MMD + self.config['enc_inv_MMD_strength']*self.Inv_MMD
         elif self.config['divergence_mode'] == 'GAN' or self.config['divergence_mode'] == 'NS-GAN':
