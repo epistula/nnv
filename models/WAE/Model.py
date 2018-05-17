@@ -169,8 +169,7 @@ class Model():
     def stable_div_expanded(self, div_func, batch_input, batch_rand_dirs_expanded):        
         n_transforms = batch_rand_dirs_expanded.get_shape().as_list()[0]
         n_reflections = batch_rand_dirs_expanded.get_shape().as_list()[1]
-        batch_rand_dirs_expanded = tf.stop_gradient(batch_rand_dirs_expanded)
-
+        
         integral = 0
         for i in range(n_transforms):
             batch_input_transformed_1 = batch_input
@@ -350,6 +349,7 @@ class Model():
             batch_rand_vectors = tf.random_normal(shape=[self.config['enc_inv_MMD_n_trans']*self.config['enc_inv_MMD_n_reflect'], self.config['n_latent']])
             batch_rand_dirs = batch_rand_vectors/helper.safe_tf_sqrt(tf.reduce_sum((batch_rand_vectors**2), axis=1, keep_dims=True)) 
             batch_rand_dirs_expanded = tf.reshape(batch_rand_dirs, [self.config['enc_inv_MMD_n_trans'], self.config['enc_inv_MMD_n_reflect'], self.config['n_latent']])           
+            batch_rand_dirs_expanded = tf.stop_gradient(batch_rand_dirs_expanded)          
             self.Inv_MMD = self.stable_div_expanded(self.compute_MMD, self.posterior_latent_code, batch_rand_dirs_expanded)
             self.MMD = self.compute_MMD(self.posterior_latent_code, self.prior_dist.sample())
             self.enc_reg_cost = self.MMD + self.config['enc_inv_MMD_strength']*self.Inv_MMD
