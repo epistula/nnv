@@ -171,15 +171,18 @@ class Model():
     def stable_div_expanded(self, div_func, batch_input, batch_rand_dirs_expanded):        
         n_transforms = batch_rand_dirs_expanded.get_shape().as_list()[0]
         n_reflections = batch_rand_dirs_expanded.get_shape().as_list()[1]
+        
+        batch_input_to_transform = batch_input[:self.batch_size_tf//2, :]
+        batch_input_to_compare = batch_input[self.batch_size_tf//2:, :]
 
-        transformed_batch_input = batch_input[np.newaxis, :, :]
+        transformed_batch_input = batch_input_to_transform[np.newaxis, :, :]
         for i in range(n_reflections):
             transformed_batch_input = self.apply_householder_reflections2(transformed_batch_input, batch_rand_dirs_expanded[:, i, :])
         transformed_batch_input_inverse = tf.reverse(transformed_batch_input, [1])
 
         integral = 0
         for j in range(n_transforms):
-            integral += div_func(transformed_batch_input_inverse[j,:,:], batch_input)
+            integral += div_func(transformed_batch_input_inverse[j,:,:], batch_input_to_compare)
         integral /= n_transforms
         return integral
 
@@ -349,10 +352,6 @@ class Model():
             batch_rand_dirs_expanded = tf.stop_gradient(batch_rand_dirs_expanded)          
             self.Inv_MMD = self.stable_div_expanded(self.compute_MMD, self.posterior_latent_code, batch_rand_dirs_expanded)
             self.MMD = self.compute_MMD(self.posterior_latent_code, self.prior_dist.sample())
-            
-            # self.MMD = helper.tf_print(self.MMD,[self.MMD,])
-            # self.Inv_MMD = helper.tf_print(self.Inv_MMD,[self.Inv_MMD,])
-
             self.enc_reg_cost = self.MMD + self.config['enc_inv_MMD_strength']*self.Inv_MMD
         elif self.config['divergence_mode'] == 'GAN' or self.config['divergence_mode'] == 'NS-GAN':
             self.div_posterior = self.Diverger.forward(self.posterior_latent_code_expanded)        
