@@ -106,7 +106,7 @@ class Model():
         z_interp = t*z_a[:, np.newaxis, :]+(1-t)*z_b[:, np.newaxis, :]
         return z_interp
 
-    def compute_MMD(self, sample_batch_1, sample_batch_2, mode='Mine', force_positive=True):
+    def compute_MMD(self, sample_batch_1, sample_batch_2, mode='His', force_positive=False):
         if mode == 'Mine':
             scales = [.1, .2, .5, 1., 2., 5., 10.]
             MMD = 0
