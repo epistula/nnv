@@ -158,16 +158,16 @@ class Model():
         n_transforms = batch_rand_dirs_expanded.get_shape().as_list()[0]
         n_reflections = batch_rand_dirs_expanded.get_shape().as_list()[1]
         
-        # batch_input_to_transform = batch_input[:self.batch_size_tf//2, :]
-        # batch_input_to_compare = batch_input[self.batch_size_tf//2:, :]
-        batch_input_to_transform = batch_input
-        batch_input_to_compare = batch_input
+        batch_input_to_transform = batch_input[:self.batch_size_tf//2, :]
+        batch_input_to_compare = batch_input[self.batch_size_tf//2:, :]
+        # batch_input_to_transform = batch_input
+        # batch_input_to_compare = batch_input
 
         transformed_batch_input = batch_input_to_transform[np.newaxis, :, :]
         for i in range(n_reflections):
             transformed_batch_input = self.apply_householder_reflections2(transformed_batch_input, batch_rand_dirs_expanded[:, i, :])
-        transformed_batch_input_inverse = tf.reverse(transformed_batch_input, [1])
-        # transformed_batch_input_inverse = transformed_batch_input
+        # transformed_batch_input_inverse = tf.reverse(transformed_batch_input, [1])
+        transformed_batch_input_inverse = transformed_batch_input
         integral = 0
         for j in range(n_transforms):
             integral += div_func(transformed_batch_input_inverse[j,:,:], batch_input_to_compare)
