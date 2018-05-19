@@ -168,10 +168,17 @@ class Model():
             transformed_batch_input = self.apply_householder_reflections2(transformed_batch_input, batch_rand_dirs_expanded[:, i, :])
         transformed_batch_input_inverse = tf.reverse(transformed_batch_input, [1])
         # transformed_batch_input_inverse = transformed_batch_input
-        integral = 0
+        
+        # integral = 0
+        # for j in range(n_transforms):
+        #     integral += div_func(transformed_batch_input_inverse[j,:,:], batch_input_to_compare)
+        # integral /= n_transforms
+        
+        list_of_divergences = []
         for j in range(n_transforms):
-            integral += div_func(transformed_batch_input_inverse[j,:,:], batch_input_to_compare)
-        integral /= n_transforms
+            pdb.set_trace()
+            list_of_divergences.append(div_func(transformed_batch_input_inverse[j,:,:], batch_input_to_compare)[np.newaxis])
+
         return integral
 
     # def stable_div_expanded(self, div_func, batch_input, batch_rand_dirs_expanded):        
