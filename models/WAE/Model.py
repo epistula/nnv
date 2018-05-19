@@ -427,9 +427,10 @@ class Model():
         ### Encoder
         timescale = 25.
         starttime = 15.
+        epoch_ratio = (self.epoch-starttime)/timescale)
         self.OT_primal = self.sample_distance_function(self.input_sample, self.reconst_sample)
         self.mean_OT_primal = tf.reduce_mean(self.OT_primal)
-        self.mean_POT_primal = self.mean_OT_primal+ (1-2*tf.nn.relu(0.5*(1-(self.epoch-starttime)/timescale)))*self.config['enc_reg_strength']*self.enc_reg_cost
+        self.mean_POT_primal = self.mean_OT_primal+ (1-2*tf.nn.relu(0.5*(1-epoch_ratio))+tf.nn.relu(-epoch_ratio))*self.config['enc_reg_strength']*self.enc_reg_cost
         self.enc_cost = self.mean_POT_primal
 
         ### Critic
