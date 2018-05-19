@@ -173,13 +173,15 @@ class Model():
         # for j in range(n_transforms):
         #     integral += div_func(transformed_batch_input_inverse[j,:,:], batch_input_to_compare)
         # integral /= n_transforms
-        
+        # stable_div = integral
+
         list_of_divergences = []
         for j in range(n_transforms):
-            pdb.set_trace()
             list_of_divergences.append(div_func(transformed_batch_input_inverse[j,:,:], batch_input_to_compare)[np.newaxis])
-
-        return integral
+        list_of_divergences_tf = tf.concat(list_of_divergences, axis=0)
+        stable_div = tf.reduce_max(list_of_divergences_tf)
+        
+        return stable_div
 
     # def stable_div_expanded(self, div_func, batch_input, batch_rand_dirs_expanded):        
     #     n_transforms = batch_rand_dirs_expanded.get_shape().as_list()[0]
