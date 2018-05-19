@@ -210,6 +210,9 @@ def selu(x, lambda_var=1.0507009873554804934193349852946, alpha_var=1.6732632423
 	negative = alpha_var*(tf.exp(negative_x)-1)
 	return lambda_var*(positive_x+negative)
 
+def hardstep(x):
+	return (1-2*tf.nn.relu(0.5*(1-x))+tf.nn.relu(-x))
+
 def lrelu(x, leak=0.2):
          f1 = 0.5 * (1 + leak)
          f2 = 0.5 * (1 - leak)
